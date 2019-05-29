@@ -1,0 +1,27 @@
+{
+  "name": "pti/pti",
+  "description": "Prototype Integration",
+  "keywords": ["typo3", "extension", "composer.json"],
+  "authors": [
+    {
+      "name": "Hannes Lau",
+      "email": "office@hanneslau.de"
+    },
+  ],
+  "license": "GPL-2.0+",
+  "type": "typo3-cms-extension",
+  "require": {
+    "typo3/cms-core": ">=7.6.0 <9.0.0",
+    "typo3/cms-frontend": ">=7.6.0 <9.0.0",
+    "typo3/cms-scheduler": ">=7.6.0 <9.0.0"
+  },
+  "replace": {
+    "ext_key": "self.version",
+    "typo3-ter/ext-key": "self.version"
+  },
+  "autoload": {
+    "psr-4": {
+      "PrototypeIntegration\\PrototypeIntegration\\": "Classes/"
+    }
+  }
+}

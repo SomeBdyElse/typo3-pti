@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2018-05-31T10:54:32Z" product-name="pti">
+		<header/>
+		<body>
+
+			<trans-unit id="formeval_headline">
+				<source>Input '%s' is invalid. Record was not saved!</source>
+			</trans-unit>
+			<trans-unit id="formeval_phoneNumber">
+				<source>The phone number has no country code. Please add this with "+[country code]" or with "00[country code]" in front of the phone number. The leading zero (0) in the area code must not be specified.</source>
+			</trans-unit>
+
+		</body>
+	</file>
+</xliff>
