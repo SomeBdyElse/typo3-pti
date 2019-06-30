@@ -6,7 +6,7 @@
     {
       "name": "Hannes Lau",
       "email": "office@hanneslau.de"
-    },
+    }
   ],
   "license": "GPL-2.0+",
   "type": "typo3-cms-extension",
