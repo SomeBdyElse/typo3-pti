@@ -16,8 +16,8 @@
     "typo3/cms-scheduler": ">=7.6.0 <10.0.0"
   },
   "replace": {
-    "ext_key": "self.version",
-    "typo3-ter/ext-key": "self.version"
+    "pti": "self.version",
+    "typo3-ter/pti": "self.version"
   },
   "autoload": {
     "psr-4": {
