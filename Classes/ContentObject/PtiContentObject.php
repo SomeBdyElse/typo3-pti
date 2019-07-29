@@ -1,8 +1,8 @@
 <?php
 namespace PrototypeIntegration\PrototypeIntegration\ContentObject;
 
-use Itools\IAA\View\TwigView;
 use PrototypeIntegration\PrototypeIntegration\Processor\PtiDataProcessor;
+use PrototypeIntegration\PrototypeIntegration\View\TwigView;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
