@@ -2,29 +2,14 @@
 
 namespace PrototypeIntegration\PrototypeIntegration\View;
 
-use Itools\IAA\View\TwigView;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Mvc\View\AbstractView;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 abstract class ExtbaseViewAdapter extends AbstractView
 {
-    /**
-     * @var TwigView
-     */
-    protected $renderer;
-
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @var LocalizationUtility
-     */
-    protected $localizationUtility;
-
     /**
      * @var array
      */
@@ -35,14 +20,24 @@ abstract class ExtbaseViewAdapter extends AbstractView
      */
     protected $template = null;
 
-    public function __construct(
-        TwigView $renderer,
-        ObjectManager $objectManager,
-        LocalizationUtility $localizationUtility
-    ) {
-        $this->renderer = $renderer;
+    /**
+     * @var Dispatcher
+     */
+    protected $signalDispatcher;
+
+    /**
+     * @var ObjectManager
+     */
+    protected $objectManager;
+
+    public function injectObjectManager(ObjectManager $objectManager)
+    {
         $this->objectManager = $objectManager;
-        $this->localizationUtility = $localizationUtility;
+    }
+
+    public function injectDispatcher(Dispatcher $signalDispatcher)
+    {
+        $this->signalDispatcher = $signalDispatcher;
     }
 
     /**
@@ -53,11 +48,24 @@ abstract class ExtbaseViewAdapter extends AbstractView
      */
     public function render()
     {
-        $this->renderer->setTemplate($this->getTemplate());
-        $this->renderer->setVariables(
-            $this->convertVariables($this->variables)
+        $viewResolverClass = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['pti']['view']['viewResolver'];
+        /** @var ViewResolver $viewResolver */
+        $viewResolver = $this->objectManager->get($viewResolverClass);
+
+        $view = $viewResolver->getViewForExtbaseAction(
+            $this->controllerContext,
+            $this->template
         );
-        return $this->renderer->render();
+
+        if ($view instanceof TemplateBasedView) {
+            $view->setTemplate($this->getTemplate());
+        }
+
+        $variables = $this->convertVariables($this->variables);
+        list($variables) = $this->signalDispatcher->dispatch(__CLASS__, 'beforeRendering', [ $variables ]);
+        $view->assignMultiple($variables);
+
+        return $view->render();
     }
 
     protected function convertVariables(array $variables): array
@@ -68,7 +76,6 @@ abstract class ExtbaseViewAdapter extends AbstractView
     public function setControllerContext(ControllerContext $controllerContext)
     {
         parent::setControllerContext($controllerContext);
-        $this->renderer->setControllerContext($controllerContext);
     }
 
     /**
