@@ -62,13 +62,20 @@ class VideoProcessor
     }
 
     /**
+     * Returns the public url of a mp4 file or null if the file is missing
      *
      * @param \TYPO3\CMS\Core\Resource\FileInterface $file
      * @return string
      */
-    protected function renderMp4Video(FileInterface $file): string
+    protected function renderMp4Video(FileInterface $file): ?string
     {
-        return $file->getPublicUrl();
+        $publicUrl = null;
+
+        if (!$file->isMissing()) {
+            $publicUrl = $file->getPublicUrl();
+        }
+
+        return $publicUrl;
     }
 
     /**
