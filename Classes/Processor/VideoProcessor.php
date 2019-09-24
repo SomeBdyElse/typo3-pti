@@ -23,8 +23,7 @@ class VideoProcessor
     /**
      *
      * @param \TYPO3\CMS\Core\Resource\FileInterface $file
-     * @return array
-     * @SuppressWarnings(PHPMD.Superglobals)
+     * @return array|null
      */
     public function renderVideo(FileInterface $file): ?array
     {
@@ -46,7 +45,7 @@ class VideoProcessor
 
     /**
      * @param FileInterface $file
-     * @return string
+     * @return string|null
      */
     protected function getPublicVideoUri(FileInterface $file): ?string
     {
