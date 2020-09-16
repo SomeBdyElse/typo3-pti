@@ -1,13 +1,11 @@
 <?php
 namespace PrototypeIntegration\PrototypeIntegration\ContentObject;
 
-use PrototypeIntegration\PrototypeIntegration\Processor\PtiDataProcessor;
-use PrototypeIntegration\PrototypeIntegration\View\DefaultViewResolver;
+use PrototypeIntegration\PrototypeIntegration\DataProcessing\ProcessorRunner;
 use PrototypeIntegration\PrototypeIntegration\View\TemplateBasedView;
 use PrototypeIntegration\PrototypeIntegration\View\ViewResolver;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -24,6 +22,11 @@ class PtiContentObject extends AbstractContentObject
     protected $conf;
 
     /**
+     * @var ProcessorRunner
+     */
+    protected $processorRunner;
+
+    /**
      * @var string
      */
     protected $templateName;
@@ -33,20 +36,15 @@ class PtiContentObject extends AbstractContentObject
      */
     protected $viewResolver;
 
-    /**
-     * @var Dispatcher
-     */
-    protected $signalSlotDispatcher;
-
     public function __construct(ContentObjectRenderer $contentObjectRenderer)
     {
         parent::__construct($contentObjectRenderer);
 
         $this->typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
+        $this->processorRunner = GeneralUtility::makeInstance(ProcessorRunner::class);
 
         $viewResolverClass = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['pti']['view']['viewResolver'];
         $this->viewResolver = GeneralUtility::makeInstance($viewResolverClass);
-        $this->signalSlotDispatcher = GeneralUtility::makeInstance(Dispatcher::class);
     }
 
     /**
@@ -61,37 +59,7 @@ class PtiContentObject extends AbstractContentObject
             $this->templateName = $this->conf['templateName'];
         }
 
-        $data = $this->cObj->data;
-        if (isset($this->conf['dataProcessors'])) {
-            foreach ($this->conf['dataProcessors'] as $dataProcessorConfiguration) {
-                // Get classname
-                $dataProcessorClassName = null;
-                if (is_string($dataProcessorConfiguration)) {
-                    $dataProcessorClassName = $dataProcessorConfiguration;
-                    $dataProcessorConfiguration = [];
-                }
-                if (isset($dataProcessorConfiguration['_typoScriptNodeValue'])) {
-                    $dataProcessorClassName = $dataProcessorConfiguration['_typoScriptNodeValue'];
-                    unset($dataProcessorConfiguration['_typoScriptNodeValue']);
-                }
-                if (! isset($dataProcessorClassName)) {
-                    throw new \RuntimeException('Missing className for dataProcessor', 1521297809618);
-                }
-
-                $data = $this->runDataProcessor($dataProcessorClassName, $dataProcessorConfiguration, $data);
-                if (is_null($data)) {
-                    return '';
-                }
-            }
-        }
-
-        if ($this->cObj->getCurrentTable() == 'tt_content') {
-            $isTranslated = ! empty($this->cObj->data['_LOCALIZED_UID']);
-            $data['uid'] =  $isTranslated ? $this->cObj->data['_LOCALIZED_UID'] : $this->cObj->data['uid'];
-        }
-
-        list($data) = $this->signalSlotDispatcher->dispatch(__CLASS__, 'beforeRendering', array($data));
-
+        $data = $this->processorRunner->processData($this->cObj->data, $this->conf, $this->cObj->getCurrentTable());
         $templateName = $this->getTemplateName();
 
         $view = $this->viewResolver->getViewForContentObject($data ?: [], $templateName);
@@ -107,25 +75,5 @@ class PtiContentObject extends AbstractContentObject
     protected function getTemplateName()
     {
         return $this->templateName;
-    }
-
-    protected function runDataProcessor($className, $configuration, $data)
-    {
-        // Instantiate class
-        $dataProcessor = GeneralUtility::makeInstance($className);
-
-        if (! $dataProcessor instanceof PtiDataProcessor) {
-            throw new \RuntimeException(
-                'Class ' . get_class($dataProcessor) . ' must implement Interface ' . PtiDataProcessor::class,
-                1542889749
-            );
-        }
-
-        if (method_exists($dataProcessor, 'injectContentObjectRenderer')) {
-            $dataProcessor->injectContentObjectRenderer($this->cObj);
-        }
-
-        $data = $dataProcessor->process($data, $configuration);
-        return $data;
     }
 }

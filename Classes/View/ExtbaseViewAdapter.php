@@ -43,7 +43,7 @@ abstract class ExtbaseViewAdapter extends AbstractView
 
         $view = $viewResolver->getViewForExtbaseAction(
             $this->controllerContext,
-            $this->template
+            $this->getTemplate()
         );
 
         if ($view instanceof TemplateBasedView) {
