@@ -4,6 +4,7 @@ namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Frontend\Resource\FileCollector;
 
 /**
@@ -91,12 +92,38 @@ class PictureProcessor
 
         $assetOptions['metaData'] = $this->fileMetaDataProcessor->processFile($image);
 
-        return $assetOptions;
+        $signalValues = $this->emitActionSignal(
+            'afterRenderPicture',
+            [
+                'assetOptions' => $assetOptions,
+                'image' => $image
+            ]
+        );
+
+        return $signalValues['assetOptions'];
     }
 
     protected function getFileCollector(): FileCollector
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return GeneralUtility::makeInstance(FileCollector::class);
+    }
+
+    /**
+     * Emits signal for various actions
+     *
+     * @param string $signalName name of the signal slot
+     * @param array $signalArguments arguments for the signal slot
+     * @return array
+     */
+    protected function emitActionSignal($signalName, array $signalArguments)
+    {
+        $signalSlotDispatcher = GeneralUtility::makeInstance(Dispatcher::class);
+
+        return $signalSlotDispatcher->dispatch(
+            __CLASS__,
+            $signalName,
+            $signalArguments
+        );
     }
 }
