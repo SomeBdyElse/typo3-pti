@@ -7,7 +7,6 @@ use PrototypeIntegration\PrototypeIntegration\View\TemplateBasedView;
 use PrototypeIntegration\PrototypeIntegration\View\ViewResolver;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -23,11 +22,6 @@ class PtiContentObject extends AbstractContentObject
      * @var array
      */
     protected $conf;
-
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
 
     /**
      * @var string
@@ -49,11 +43,10 @@ class PtiContentObject extends AbstractContentObject
         parent::__construct($contentObjectRenderer);
 
         $this->typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
         $viewResolverClass = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['pti']['view']['viewResolver'];
-        $this->viewResolver = $this->objectManager->get($viewResolverClass);
-        $this->signalSlotDispatcher = $this->objectManager->get(Dispatcher::class);
+        $this->viewResolver = GeneralUtility::makeInstance($viewResolverClass);
+        $this->signalSlotDispatcher = GeneralUtility::makeInstance(Dispatcher::class);
     }
 
     /**
@@ -119,7 +112,7 @@ class PtiContentObject extends AbstractContentObject
     protected function runDataProcessor($className, $configuration, $data)
     {
         // Instantiate class
-        $dataProcessor = $this->objectManager->get($className);
+        $dataProcessor = GeneralUtility::makeInstance($className);
 
         if (! $dataProcessor instanceof PtiDataProcessor) {
             throw new \RuntimeException(

@@ -1,7 +1,7 @@
 <?php
 namespace PrototypeIntegration\PrototypeIntegration\Processor\PageElement;
 
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
@@ -9,11 +9,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class LanguageMenuProcessor
 {
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
     /**
      * @var ContentObjectRenderer
      */
@@ -23,12 +18,10 @@ class LanguageMenuProcessor
      * LanguageMenuProcessor constructor.
      *
      * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObject
-     * @param \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager
      */
-    public function __construct(ContentObjectRenderer $contentObject, ObjectManager $objectManager)
+    public function __construct(ContentObjectRenderer $contentObject)
     {
         $this->contentObject = $contentObject;
-        $this->objectManager = $objectManager;
     }
 
     /**
@@ -68,7 +61,7 @@ class LanguageMenuProcessor
     protected function getLanguageData(array $processorConfiguration): array
     {
         /** @var \TYPO3\CMS\Frontend\DataProcessing\LanguageMenuProcessor $menuDataFetcher */
-        $menuDataFetcher = $this->objectManager->get(\TYPO3\CMS\Frontend\DataProcessing\LanguageMenuProcessor::class);
+        $menuDataFetcher = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\DataProcessing\LanguageMenuProcessor::class);
         $menuData = $menuDataFetcher->process($this->contentObject, [], $processorConfiguration, [])['languagemenu'];
         return $menuData;
     }

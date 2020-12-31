@@ -5,7 +5,6 @@ namespace PrototypeIntegration\PrototypeIntegration\View;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Mvc\View\AbstractView;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 abstract class ExtbaseViewAdapter extends AbstractView
@@ -25,16 +24,6 @@ abstract class ExtbaseViewAdapter extends AbstractView
      */
     protected $signalDispatcher;
 
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
-    public function injectObjectManager(ObjectManager $objectManager)
-    {
-        $this->objectManager = $objectManager;
-    }
-
     public function injectDispatcher(Dispatcher $signalDispatcher)
     {
         $this->signalDispatcher = $signalDispatcher;
@@ -50,7 +39,7 @@ abstract class ExtbaseViewAdapter extends AbstractView
     {
         $viewResolverClass = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['pti']['view']['viewResolver'];
         /** @var ViewResolver $viewResolver */
-        $viewResolver = $this->objectManager->get($viewResolverClass);
+        $viewResolver = GeneralUtility::makeInstance($viewResolverClass);
 
         $view = $viewResolver->getViewForExtbaseAction(
             $this->controllerContext,

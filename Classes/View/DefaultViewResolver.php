@@ -3,25 +3,19 @@
 namespace PrototypeIntegration\PrototypeIntegration\View;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 class DefaultViewResolver implements ViewResolver
 {
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
     /**
      * @var ExtensionConfiguration
      */
     protected $extensionConfiguration;
 
-    public function __construct(ObjectManager $objectManager, ExtensionConfiguration $extensionConfiguration)
+    public function __construct(ExtensionConfiguration $extensionConfiguration)
     {
-        $this->objectManager = $objectManager;
         $this->extensionConfiguration = $extensionConfiguration;
     }
 
@@ -38,7 +32,8 @@ class DefaultViewResolver implements ViewResolver
     protected function getDefaultView(): ViewInterface
     {
         $class = $this->extensionConfiguration->get('pti', 'defaultView');
-        $view = $this->objectManager->get($class);
+        /** @var ViewInterface $view */
+        $view = GeneralUtility::makeInstance($class);
         return $view;
     }
 }
