@@ -1,0 +1,9 @@
+# Configuration/Services.yaml
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  PrototypeIntegration\PrototypeIntegration\:
+    resource: '../Classes/*'
