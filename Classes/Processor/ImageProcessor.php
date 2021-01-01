@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
@@ -43,7 +45,6 @@ class ImageProcessor
     }
 
     /**
-     *
      * @param \TYPO3\CMS\Core\Resource\FileInterface $image
      * @param array $configuration
      * @return string
@@ -67,10 +68,8 @@ class ImageProcessor
     }
 
     /**
-     *
      * @param array $asset
      * @param array $conf
-     * @return void
      */
     protected function clearAssetOptions(array &$asset, array $conf = [])
     {
@@ -102,11 +101,11 @@ class ImageProcessor
                 preg_match($splitRegexp, $defaultValue, $matches);
                 list($_, $value, $cropMode, $cropOffsetDirection, $cropOffsetValue) = $matches;
 
-                $newValue = 2 * ((int) $value);
+                $newValue = 2 * ((int)$value);
 
-                if ((int) $cropOffsetValue > 0) {
+                if ((int)$cropOffsetValue > 0) {
                     $newCropOffsetDirection = $cropOffsetDirection;
-                    $newCropOffsetValue = 2 * (int) $cropOffsetValue;
+                    $newCropOffsetValue = 2 * (int)$cropOffsetValue;
                 } else {
                     $newCropOffsetDirection = '';
                     $newCropOffsetValue = '';

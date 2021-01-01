@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
@@ -51,7 +53,7 @@ class CompoundProcessor implements PtiDataProcessor
         foreach ($configuration as $nodeKey => $node) {
             if (is_array($node)) {
                 $nodeValue = $node['_typoScriptNodeValue'] ?? null;
-                switch($nodeValue) {
+                switch ($nodeValue) {
                     case null:
                         if (is_array($node)) {
                             $subContentData = $this->gatherContentData($node, $data, $table);

@@ -1,13 +1,12 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Formatter;
 
 use IntlDateFormatter;
 
 /**
- * Class DateTimeFormatter
- * @package PrototypeIntegration\PrototypeIntegration\Processor
- *
  * Wrapper class for PHP's IntlDateFormatter
  */
 class DateTimeFormatter
@@ -25,7 +24,7 @@ class DateTimeFormatter
      * @param int $timeType
      * The time format to use @link http://php.net/manual/en/intl.intldateformatter-constants.php
      *
-     * @param null|string $locale
+     * @param string|null $locale
      * The locale e.G. "en_US" to use. Will default to the current php locale.
      *
      * @return string The formatted string or, if an error occurred, null
@@ -63,7 +62,7 @@ class DateTimeFormatter
      *
      * @param $value @see DateTimeFormatter::format
      * @param int $dateType @see DateTimeFormatter::format
-     * @param null|string $locale @see DateTimeFormatter::format
+     * @param string|null $locale @see DateTimeFormatter::format
      * @return string The formatted string or, if an error occurred, null
      */
     public function formatDate(

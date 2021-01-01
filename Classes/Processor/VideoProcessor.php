@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
@@ -19,7 +21,6 @@ class VideoProcessor
     }
 
     /**
-     *
      * @param \TYPO3\CMS\Core\Resource\FileInterface $file
      * @return array
      * @SuppressWarnings(PHPMD.Superglobals)
@@ -77,7 +78,6 @@ class VideoProcessor
     }
 
     /**
-     *
      * @param \TYPO3\CMS\Core\Resource\FileInterface $file
      * @return string
      */
@@ -98,7 +98,7 @@ class VideoProcessor
     /**
      * Get the right online media helper for a given file
      * @param FileInterface $file
-     * @return null|OnlineMediaHelperInterface
+     * @return OnlineMediaHelperInterface|null
      */
     protected function getOnlineMediaHelper(FileInterface $file): ?OnlineMediaHelperInterface
     {

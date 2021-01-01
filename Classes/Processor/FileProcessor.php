@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
@@ -30,7 +32,6 @@ use TYPO3\CMS\Frontend\Resource\FileCollector;
  *  append = ...
  *  respectWordBoundaries = 1
  * }
- *
  */
 class FileProcessor
 {
@@ -86,7 +87,6 @@ class FileProcessor
     }
 
     /**
-     *
      * @param string $table The referencing table
      * @param string $fieldName The field name containing the reference
      * @param array $row The referencing row (must be from $table and include $fieldName)
@@ -153,7 +153,7 @@ class FileProcessor
      * or empty.
      *
      * @param \TYPO3\CMS\Core\Resource\FileReference $item
-     * @return null|string
+     * @return string|null
      */
     protected function getMetaDataDescription(FileReference $item): ?string
     {
@@ -177,7 +177,7 @@ class FileProcessor
 
         return $description;
     }
-    
+
     protected function setMetaDataConfiguration()
     {
         if (isset($this->configuration['metaDataDescription'])) {

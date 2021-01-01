@@ -28,7 +28,6 @@ class TypoLinkStringProcessorTest extends TestCase
             ->willReturn($this->mockTypoLinkUrlResult)
         ;
         /** @var ContentObjectRenderer $contentObjectRendererMock */
-
         $this->typoLinkStringProcessor = new TypoLinkStringProcessor(
             $typoLinkCodeService,
             $contentObjectRendererMock
@@ -42,10 +41,10 @@ class TypoLinkStringProcessorTest extends TestCase
     {
         $resultingArray = $this->typoLinkStringProcessor->processTypoLinkString('https://www.example.com/asdf');
 
-        $this->assertEquals($this->mockTypoLinkUrlResult, $resultingArray['config']['uri']);
-        $this->assertEmpty($resultingArray['config']['target']);
-        $this->assertEmpty($resultingArray['config']['class']);
-        $this->assertEmpty($resultingArray['config']['title']);
+        self::assertEquals($this->mockTypoLinkUrlResult, $resultingArray['config']['uri']);
+        self::assertEmpty($resultingArray['config']['target']);
+        self::assertEmpty($resultingArray['config']['class']);
+        self::assertEmpty($resultingArray['config']['title']);
     }
 
     /**
@@ -55,6 +54,6 @@ class TypoLinkStringProcessorTest extends TestCase
     {
         $resultingArray = $this->typoLinkStringProcessor->processTypoLinkString('https://www.example.com/asdf _blank');
 
-        $this->assertEquals('_blank', $resultingArray['config']['target']);
+        self::assertEquals('_blank', $resultingArray['config']['target']);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace PrototypeIntegration\PrototypeIntegration\Tests\Unit\Evaluator;
 
 use PHPUnit\Framework\TestCase;
@@ -24,11 +25,10 @@ class PhoneNumberValidationTest extends TestCase
      */
     public function jsEvaluationIsCalled()
     {
-        $this->assertNotEmpty($this->validator->returnFieldJs());
+        self::assertNotEmpty($this->validator->returnFieldJs());
     }
 
     /**
-     *
      * @param $inputString
      * @param $expected
      * @test
@@ -37,7 +37,7 @@ class PhoneNumberValidationTest extends TestCase
     public function telephoneIsProperlyEvaluated($inputString, $expected)
     {
         $isSet = false;
-        $this->assertEquals($expected, $this->validator->evaluateFieldValue($inputString, '', $isSet));
+        self::assertEquals($expected, $this->validator->evaluateFieldValue($inputString, '', $isSet));
     }
 
     public function telephoneIsProperlyEvaluatedDataProvider(): array

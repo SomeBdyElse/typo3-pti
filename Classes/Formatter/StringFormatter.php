@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Formatter;
 
@@ -17,7 +19,7 @@ class StringFormatter
      *  'respectWordBoundaries' => true
      * ]
      *
-     * @param null|string $value The value to format
+     * @param string|null $value The value to format
      * @param array $config The cropping configuration
      * @return string The cropped string or null
      */

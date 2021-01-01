@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor\PageElement;
 
@@ -15,7 +17,6 @@ class LanguageMenuProcessor
     }
 
     /**
-     *
      * @param string $languages List of language uid or auto
      * @param array $pageData
      * @param bool $currentLanguageFirst

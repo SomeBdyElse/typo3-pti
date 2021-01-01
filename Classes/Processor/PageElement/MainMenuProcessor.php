@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor\PageElement;
 
@@ -21,7 +23,6 @@ class MainMenuProcessor
     }
 
     /**
-     *
      * @param array $typo3MenuData
      * @param string|int $doNotLinkDokType
      * @return array

@@ -1,4 +1,5 @@
 <?php
+
 namespace PrototypeIntegration\PrototypeIntegration\Tests\Unit\Processor;
 
 use PHPUnit\Framework\TestCase;
@@ -26,7 +27,7 @@ class FileSizeProcessorTest extends TestCase
      */
     public function defaultFormatFileSize($fileSize, $formatSettings, $expected)
     {
-        $this->assertEquals($expected, $this->fileSizeProcessor->formatFileSize($fileSize, $formatSettings));
+        self::assertEquals($expected, $this->fileSizeProcessor->formatFileSize($fileSize, $formatSettings));
     }
 
     /**

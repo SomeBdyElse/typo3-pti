@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
@@ -19,7 +21,7 @@ class RichtextProcessor
      *
      * Includes link processing, etc.
      *
-     * @param null|string $rteText
+     * @param string|null $rteText
      * @return string
      */
     public function processRteText(?string $rteText): string

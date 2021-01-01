@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Evaluator;
 
@@ -42,7 +44,6 @@ abstract class AbstractFieldValidator
      * @param string $message
      * @param string $title optional message title
      * @param int $severity optional severity code
-     * @return void
      * @throws \InvalidArgumentException
      */
     protected function addFlashMessage($message, $title = '', $severity = FlashMessage::OK)
