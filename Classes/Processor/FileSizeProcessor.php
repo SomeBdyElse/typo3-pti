@@ -1,11 +1,12 @@
-<?php
+<?php declare(strict_types = 1);
+
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class FileSizeProcessor
 {
-    protected static $defaultConfiguration = [
+    protected static array $defaultConfiguration = [
         'decimals' => 0,
         'units' => 'B,KB,MB,GB,TB,PB,EB,ZB,YB',
     ];

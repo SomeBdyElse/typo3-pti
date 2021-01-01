@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor\PageElement;
 
@@ -8,20 +8,11 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class MenuProcessor implements PtiDataProcessor
 {
-    /**
-     * @var \TYPO3\CMS\Frontend\DataProcessing\MenuProcessor
-     */
-    protected $menuDataFetcher;
+    protected \TYPO3\CMS\Frontend\DataProcessing\MenuProcessor $menuDataFetcher;
 
-    /**
-     * @var ContentObjectRenderer
-     */
-    protected $contentObjectRenderer;
+    protected ContentObjectRenderer $contentObjectRenderer;
 
-    /**
-     * @var TypoScriptService
-     */
-    protected $typoScriptService;
+    protected TypoScriptService $typoScriptService;
 
     public function __construct(
         \TYPO3\CMS\Frontend\DataProcessing\MenuProcessor $menuDataFetcher,

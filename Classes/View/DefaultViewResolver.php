@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace PrototypeIntegration\PrototypeIntegration\View;
 
@@ -9,10 +9,7 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 class DefaultViewResolver implements ViewResolver
 {
-    /**
-     * @var ExtensionConfiguration
-     */
-    protected $extensionConfiguration;
+    protected ExtensionConfiguration $extensionConfiguration;
 
     public function __construct(ExtensionConfiguration $extensionConfiguration)
     {

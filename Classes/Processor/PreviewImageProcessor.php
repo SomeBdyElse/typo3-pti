@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types = 1);
+
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use TYPO3\CMS\Core\Resource\AbstractFile;
@@ -16,25 +17,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PreviewImageProcessor
 {
-    /**
-     * @var string
-     */
     const FILE_PREVIEW_IMAGE_PROPERTY = 'preview_image';
 
-    /**
-     * @var MetaDataRepository
-     */
-    protected $metaDataRepository;
+    protected MetaDataRepository $metaDataRepository;
 
-    /**
-     * @var FileRepository
-     */
-    protected $fileRepository;
+    protected FileRepository $fileRepository;
 
-    /**
-     * @param \TYPO3\CMS\Core\Resource\Index\MetaDataRepository $metaDataRepository
-     * @param \TYPO3\CMS\Core\Resource\FileRepository $fileRepository
-     */
     public function __construct(
         MetaDataRepository $metaDataRepository,
         FileRepository $fileRepository
@@ -43,12 +31,6 @@ class PreviewImageProcessor
         $this->fileRepository = $fileRepository;
     }
 
-    /**
-     *
-     * @param \TYPO3\CMS\Core\Resource\FileInterface $file
-     * @param array $configuration
-     * @return \TYPO3\CMS\Core\Resource\FileInterface|null
-     */
     public function getPreviewImage(FileInterface $file, array $configuration = []): ?FileInterface
     {
         if ($posterImageProperty = $file->getProperty(self::FILE_PREVIEW_IMAGE_PROPERTY)) {

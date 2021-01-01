@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types = 1);
+
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -6,23 +7,14 @@ use TYPO3\CMS\Frontend\Service\TypoLinkCodecService;
 
 class TypoLinkStringProcessor
 {
-    /**
-     * @var TypoLinkCodecService
-     */
-    protected $typoLinkCodecService;
+    protected TypoLinkCodecService $typoLinkCodecService;
 
-    /**
-     * @var ContentObjectRenderer
-     */
-    protected $contentObject;
+    protected ContentObjectRenderer $contentObject;
 
-    /**
-     * LinkProcessor constructor.
-     * @param TypoLinkCodecService $typoLinkCodecService
-     * @param ContentObjectRenderer $contentObject
-     */
-    public function __construct(TypoLinkCodecService $typoLinkCodecService, ContentObjectRenderer $contentObject)
-    {
+    public function __construct(
+        TypoLinkCodecService $typoLinkCodecService,
+        ContentObjectRenderer $contentObject
+    ) {
         $this->typoLinkCodecService = $typoLinkCodecService;
         $this->contentObject = $contentObject;
     }

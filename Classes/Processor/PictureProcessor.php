@@ -1,5 +1,5 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types = 1);
+
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use TYPO3\CMS\Core\Resource\FileInterface;
@@ -31,23 +31,14 @@ use TYPO3\CMS\Frontend\Resource\FileCollector;
  */
 class PictureProcessor
 {
-    /**
-     * @var ImageProcessor
-     */
-    protected $imageProcessor;
+    protected ImageProcessor $imageProcessor;
 
-    /**
-     * @var FileMetadataProcessor
-     */
-    protected $fileMetaDataProcessor;
+    protected FileMetadataProcessor $fileMetaDataProcessor;
 
-    /**
-     * PictureProcessor constructor.
-     * @param ImageProcessor $imageProcessor
-     * @param FileMetadataProcessor $fileMetaDataProcessor
-     */
-    public function __construct(ImageProcessor $imageProcessor, FileMetadataProcessor $fileMetaDataProcessor)
-    {
+    public function __construct(
+        ImageProcessor $imageProcessor,
+        FileMetadataProcessor $fileMetaDataProcessor
+    ) {
         $this->imageProcessor = $imageProcessor;
         $this->fileMetaDataProcessor = $fileMetaDataProcessor;
     }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace PrototypeIntegration\PrototypeIntegration\View;
 
@@ -9,20 +9,11 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 abstract class ExtbaseViewAdapter extends AbstractView
 {
-    /**
-     * @var array
-     */
-    protected $settings;
+    protected ?array $settings;
 
-    /**
-     * @var string
-     */
-    protected $template = null;
+    protected ?string $template = null;
 
-    /**
-     * @var Dispatcher
-     */
-    protected $signalDispatcher;
+    protected Dispatcher $signalDispatcher;
 
     public function injectDispatcher(Dispatcher $signalDispatcher)
     {

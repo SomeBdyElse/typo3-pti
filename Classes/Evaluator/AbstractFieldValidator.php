@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types = 1);
+
 namespace PrototypeIntegration\PrototypeIntegration\Evaluator;
 
 use TYPO3\CMS\Core\Messaging\FlashMessage;

@@ -1,14 +1,10 @@
-<?php
+<?php declare(strict_types = 1);
+
 namespace PrototypeIntegration\PrototypeIntegration\Formatter;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-/**
- * Class StringCropFormatter
- *
- * @package PrototypeIntegration\PrototypeIntegration\Processor
- */
 class StringFormatter
 {
     /**

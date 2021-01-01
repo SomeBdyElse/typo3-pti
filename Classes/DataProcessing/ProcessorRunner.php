@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace PrototypeIntegration\PrototypeIntegration\DataProcessing;
 
@@ -9,20 +9,10 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class ProcessorRunner
 {
-    /**
-     * @var Dispatcher
-     */
-    protected $signalSlotDispatcher;
+    protected Dispatcher $signalSlotDispatcher;
 
-    /**
-     * @var ContentObjectRenderer
-     */
-    protected $contentObjectRenderer;
+    protected ContentObjectRenderer $contentObjectRenderer;
 
-    /**
-     * ProcessorRunner constructor.
-     * @param Dispatcher $signalSlotDispatcher
-     */
     public function __construct(Dispatcher $signalSlotDispatcher)
     {
         $this->signalSlotDispatcher = $signalSlotDispatcher;

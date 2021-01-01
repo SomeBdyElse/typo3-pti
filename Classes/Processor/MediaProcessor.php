@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types = 1);
+
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use TYPO3\CMS\Core\Resource\AbstractFile;
@@ -9,33 +10,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Frontend\Resource\FileCollector;
 
-/**
- * Class MediaProcessor
- */
 class MediaProcessor
 {
-    /**
-     * @var PictureProcessor
-     */
-    protected $pictureProcessor;
+    protected PictureProcessor $pictureProcessor;
 
-    /**
-     * @var VideoProcessor
-     */
-    protected $videoProcessor;
+    protected VideoProcessor $videoProcessor;
 
-    /**
-     * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
-     */
-    protected $signalDispatcher;
+    protected Dispatcher $signalDispatcher;
 
-    /**
-     * MediaProcessor constructor.
-     *
-     * @param \PrototypeIntegration\PrototypeIntegration\Processor\PictureProcessor
-     * @param \PrototypeIntegration\PrototypeIntegration\Processor\VideoProcessor $videoProcessor
-     * @param \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalDispatcher
-     */
     public function __construct(
         PictureProcessor $pictureProcessor,
         VideoProcessor $videoProcessor,

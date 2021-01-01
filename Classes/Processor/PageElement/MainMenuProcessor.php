@@ -1,24 +1,16 @@
-<?php
+<?php declare(strict_types = 1);
+
 namespace PrototypeIntegration\PrototypeIntegration\Processor\PageElement;
 
 use PrototypeIntegration\PrototypeIntegration\Processor\TypoLinkStringProcessor;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class MainMenuProcessor
- */
 class MainMenuProcessor
 {
-    /**
-     * @var TypoScriptService
-     */
-    protected $typoScriptService;
+    protected TypoScriptService $typoScriptService;
 
-    /**
-     * @var TypoLinkStringProcessor
-     */
-    protected $typoLinkStringProcessor;
+    protected TypoLinkStringProcessor $typoLinkStringProcessor;
 
     public function __construct(
         TypoScriptService $typoScriptService,

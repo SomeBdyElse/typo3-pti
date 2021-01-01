@@ -1,14 +1,11 @@
-<?php
+<?php declare(strict_types = 1);
+
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use TYPO3\CMS\Core\Resource\FileInterface;
 
 class FileMetadataProcessor
 {
-    /**
-     * @param FileInterface $file
-     * @return array
-     */
     public function processFile(FileInterface $file): array
     {
         $properties = [

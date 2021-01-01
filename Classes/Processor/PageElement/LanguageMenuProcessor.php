@@ -1,24 +1,14 @@
-<?php
+<?php declare(strict_types = 1);
+
 namespace PrototypeIntegration\PrototypeIntegration\Processor\PageElement;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-/**
- * Class LanguageMenuProcessor
- */
 class LanguageMenuProcessor
 {
-    /**
-     * @var ContentObjectRenderer
-     */
-    protected $contentObject;
+    protected ContentObjectRenderer $contentObject;
 
-    /**
-     * LanguageMenuProcessor constructor.
-     *
-     * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObject
-     */
     public function __construct(ContentObjectRenderer $contentObject)
     {
         $this->contentObject = $contentObject;

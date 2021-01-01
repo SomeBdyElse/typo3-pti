@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
@@ -11,20 +11,11 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 class CompoundProcessor implements PtiDataProcessor
 {
-    /**
-     * @var ContentObjectRenderer
-     */
-    protected $contentObjectRenderer;
+    protected ContentObjectRenderer $contentObjectRenderer;
 
-    /**
-     * @var TypoScriptService
-     */
-    protected $typoScriptService;
+    protected TypoScriptService $typoScriptService;
 
-    /**
-     * @var TypoScriptParser
-     */
-    protected $typoScriptParser;
+    protected TypoScriptParser $typoScriptParser;
 
     public function __construct(
         TypoScriptService $typoScriptService,

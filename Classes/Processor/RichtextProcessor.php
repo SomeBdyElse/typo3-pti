@@ -1,19 +1,13 @@
-<?php
+<?php declare(strict_types = 1);
+
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class RichtextProcessor
 {
-    /**
-     * @var ContentObjectRenderer
-     */
-    protected $contentObject;
+    protected ContentObjectRenderer $contentObject;
 
-    /**
-     * RteProcessor constructor.
-     * @param ContentObjectRenderer $contentObject
-     */
     public function __construct(ContentObjectRenderer $contentObject)
     {
         $this->contentObject = $contentObject;

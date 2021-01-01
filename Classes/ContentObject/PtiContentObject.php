@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types = 1);
+
 namespace PrototypeIntegration\PrototypeIntegration\ContentObject;
 
 use PrototypeIntegration\PrototypeIntegration\DataProcessing\ProcessorRunner;
@@ -11,30 +12,15 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class PtiContentObject extends AbstractContentObject
 {
-    /**
-     * @var TypoScriptService
-     */
-    protected $typoScriptService;
+    protected TypoScriptService $typoScriptService;
 
-    /**
-     * @var array
-     */
-    protected $conf;
+    protected ProcessorRunner $processorRunner;
 
-    /**
-     * @var ProcessorRunner
-     */
-    protected $processorRunner;
+    protected ViewResolver $viewResolver;
 
-    /**
-     * @var string
-     */
-    protected $templateName;
+    protected array $conf;
 
-    /**
-     * @var ViewResolver
-     */
-    protected $viewResolver;
+    protected string $templateName;
 
     public function __construct(ContentObjectRenderer $contentObjectRenderer)
     {

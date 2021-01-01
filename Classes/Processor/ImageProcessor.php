@@ -1,21 +1,16 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types = 1);
+
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 class ImageProcessor
 {
-    /**
-     * @var ContentObjectRenderer
-     */
-    protected $contentObject;
+    protected ContentObjectRenderer $contentObject;
 
-    /**
-     * @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
-     */
-    protected $tsfe;
+    protected TypoScriptFrontendController $tsfe;
 
     /**
      * @param ContentObjectRenderer $contentObject

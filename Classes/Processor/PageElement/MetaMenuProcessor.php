@@ -1,17 +1,9 @@
-<?php
+<?php declare(strict_types = 1);
+
 namespace PrototypeIntegration\PrototypeIntegration\Processor\PageElement;
 
-/**
- * Class MetaMenuProcessor
- */
 class MetaMenuProcessor
 {
-    /**
-     *
-     * @param array $typo3MenuData
-     * @param array $metaNavIcon
-     * @return array
-     */
     public function process(array $typo3MenuData, array $metaNavIcon = []): array
     {
         $twigMenuData = $typo3MenuData;
@@ -23,12 +15,6 @@ class MetaMenuProcessor
         return $twigMenuData;
     }
 
-    /**
-     *
-     * @param array $menuData
-     * @param array $metaNavIcon
-     * @return array
-     */
     protected function addPageInformation(array $menuData, array $metaNavIcon = []): array
     {
         $menuData['doktype'] = $menuData['data']['doktype'];

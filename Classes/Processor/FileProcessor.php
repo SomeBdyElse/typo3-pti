@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types = 1);
+
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use PrototypeIntegration\PrototypeIntegration\Formatter\StringFormatter;
@@ -33,40 +34,19 @@ use TYPO3\CMS\Frontend\Resource\FileCollector;
  */
 class FileProcessor
 {
-    /**
-     * @var ContentObjectRenderer
-     */
-    protected $contentObject;
+    protected ContentObjectRenderer $contentObject;
 
-    /**
-     * @var FileSizeProcessor
-     */
-    protected $fileSizeProcessor;
+    protected FileSizeProcessor $fileSizeProcessor;
 
-    /**
-     * @var TypoLinkStringProcessor
-     */
-    protected $typoLinkStringProcessor;
+    protected TypoLinkStringProcessor $typoLinkStringProcessor;
 
-    /**
-     * @var PreviewImageProcessor
-     */
-    protected $previewImageProcessor;
+    protected PreviewImageProcessor $previewImageProcessor;
 
-    /**
-     * @var PictureProcessor
-     */
-    protected $pictureProcessor;
+    protected PictureProcessor $pictureProcessor;
 
-    /**
-     * @var StringFormatter
-     */
-    protected $stringFormatter;
+    protected StringFormatter $stringFormatter;
 
-    /**
-     * @var array
-     */
-    protected $configuration;
+    protected array $configuration;
 
     /**
      * @var array

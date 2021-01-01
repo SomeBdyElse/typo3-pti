@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types = 1);
+
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use TYPO3\CMS\Core\Resource\File;
@@ -9,10 +10,7 @@ use TYPO3\CMS\Core\Resource\OnlineMedia\Helpers\OnlineMediaHelperRegistry;
 
 class VideoProcessor
 {
-    /**
-     * @var FileMetadataProcessor
-     */
-    protected $fileMetaDataProcessor;
+    protected FileMetadataProcessor $fileMetaDataProcessor;
 
     public function __construct(
         FileMetadataProcessor $fileMetaDataProcessor
