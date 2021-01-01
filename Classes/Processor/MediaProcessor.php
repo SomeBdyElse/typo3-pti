@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
+use PrototypeIntegration\PrototypeIntegration\Processor\Event\MediaProcessorManipulateImageRenderConfigurationEvent;
+use PrototypeIntegration\PrototypeIntegration\Processor\Event\MediaProcessorRenderedEvent;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Frontend\Resource\FileCollector;
 
 class MediaProcessor
@@ -18,16 +20,16 @@ class MediaProcessor
 
     protected VideoProcessor $videoProcessor;
 
-    protected Dispatcher $signalDispatcher;
+    protected EventDispatcher $eventDispatcher;
 
     public function __construct(
         PictureProcessor $pictureProcessor,
         VideoProcessor $videoProcessor,
-        Dispatcher $signalDispatcher
+        EventDispatcher $eventDispatcher
     ) {
         $this->pictureProcessor = $pictureProcessor;
         $this->videoProcessor = $videoProcessor;
-        $this->signalDispatcher = $signalDispatcher;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -93,27 +95,23 @@ class MediaProcessor
         array $imageConfiguration,
         array $imageThumbnailConfiguration
     ) {
-        $signalValues = [
-            'mediaElement' => $mediaElement,
-            'imageConfiguration' => $imageConfiguration
-        ];
-        $signalValues = $this->emitActionSignal(
-            'manipulateImageRenderConfiguration',
-            $signalValues
-        );
+        $event = new MediaProcessorManipulateImageRenderConfigurationEvent($mediaElement, $imageConfiguration);
+        $event = $this->eventDispatcher->dispatch($event);
+        $mediaElement = $event->getMediaElement();
+        $imageConfiguration = $event->getImageConfiguration();
 
         $mediaData = [
-            'uid' => $signalValues['mediaElement']->getProperty('uid'),
+            'uid' => $mediaElement->getProperty('uid'),
             'type' => 'image',
             'image' => $this->pictureProcessor->renderPicture(
-                $signalValues['mediaElement'],
-                $signalValues['imageConfiguration']
+                $mediaElement,
+                $imageConfiguration
             )
         ];
 
         if (! empty($mediaData) && ! empty($imageThumbnailConfiguration)) {
             $mediaData['thumbnail'] = $this->pictureProcessor->renderPicture(
-                $signalValues['mediaElement'],
+                $mediaElement,
                 $imageThumbnailConfiguration
             );
         }
@@ -134,19 +132,14 @@ class MediaProcessor
                 'video' => $video,
             ];
 
-            $signalData = [
-                'mediaFile' => $mediaElement,
-                'mediaData' => $mediaData,
-                'parentObject' => $this,
-                'imageConfig' => $posterThumbnailConfiguration,
-            ];
-            $signalData = $this->signalDispatcher->dispatch(
-                __CLASS__,
-                __FUNCTION__ . 'AfterRender',
-                $signalData
-            );
+            $mediaData = $this->eventDispatcher->dispatch(new MediaProcessorRenderedEvent(
+                $mediaElement,
+                $this,
+                $posterThumbnailConfiguration,
+                $mediaData
+            ))->getMediaData();
 
-            return $signalData['mediaData'];
+            return $mediaData;
         }
 
         return null;
@@ -183,23 +176,5 @@ class MediaProcessor
         }
 
         return AbstractFile::FILETYPE_UNKNOWN;
-    }
-
-    /**
-     * Emits signal for various actions
-     *
-     * @param string $signalName name of the signal slot
-     * @param array $signalArguments arguments for the signal slot
-     * @return array
-     */
-    protected function emitActionSignal($signalName, array $signalArguments)
-    {
-        $signalSlotDispatcher = GeneralUtility::makeInstance(Dispatcher::class);
-
-        return $signalSlotDispatcher->dispatch(
-            __CLASS__,
-            $signalName,
-            $signalArguments
-        );
     }
 }

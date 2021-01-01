@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Frontend\Resource\FileCollector;
 
 /**
@@ -37,12 +37,16 @@ class PictureProcessor
 
     protected FileMetadataProcessor $fileMetaDataProcessor;
 
+    protected EventDispatcherInterface $eventDispatcher;
+
     public function __construct(
         ImageProcessor $imageProcessor,
-        FileMetadataProcessor $fileMetaDataProcessor
+        FileMetadataProcessor $fileMetaDataProcessor,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->imageProcessor = $imageProcessor;
         $this->fileMetaDataProcessor = $fileMetaDataProcessor;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -69,54 +73,35 @@ class PictureProcessor
 
     public function renderPicture(FileInterface $image, $configuration): array
     {
-        $assetOptions['default'] = $this->imageProcessor->renderImage(
+        $result = [];
+        $result['default'] = $this->imageProcessor->renderImage(
             $image,
             isset($configuration['default']) ? $configuration['default'] : []
         );
 
         if (isset($configuration['variants']) && !empty($configuration['variants'])) {
             foreach ($configuration['variants'] as $variant) {
-                $assetOptions['variants'][] = $this->imageProcessor->renderImage(
+                if (!isset($result['variants'])) {
+                    $result['variants'] = [];
+                }
+                $result['variants'][] = $this->imageProcessor->renderImage(
                     $image,
                     $variant['config']
                 );
             }
         }
 
-        $assetOptions['metaData'] = $this->fileMetaDataProcessor->processFile($image);
+        $result['metaData'] = $this->fileMetaDataProcessor->processFile($image);
 
-        $signalValues = $this->emitActionSignal(
-            'afterRenderPicture',
-            [
-                'assetOptions' => $assetOptions,
-                'image' => $image
-            ]
-        );
-
-        return $signalValues['assetOptions'];
+        $event = new Event\PictureProcessorRenderedEvent($image, $result);
+        $event = $this->eventDispatcher->dispatch($event);
+        $result = $event->getResult();
+        return $result;
     }
 
     protected function getFileCollector(): FileCollector
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return GeneralUtility::makeInstance(FileCollector::class);
-    }
-
-    /**
-     * Emits signal for various actions
-     *
-     * @param string $signalName name of the signal slot
-     * @param array $signalArguments arguments for the signal slot
-     * @return array
-     */
-    protected function emitActionSignal($signalName, array $signalArguments)
-    {
-        $signalSlotDispatcher = GeneralUtility::makeInstance(Dispatcher::class);
-
-        return $signalSlotDispatcher->dispatch(
-            __CLASS__,
-            $signalName,
-            $signalArguments
-        );
     }
 }

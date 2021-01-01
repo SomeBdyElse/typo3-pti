@@ -7,3 +7,15 @@ services:
 
   PrototypeIntegration\PrototypeIntegration\:
     resource: '../Classes/*'
+
+  # Do not auto wire constructors of event classes
+  PrototypeIntegration\PrototypeIntegration\DataProcessing\Event\ProcessorRunnerRanEvent:
+    autowire: false
+  PrototypeIntegration\PrototypeIntegration\Processor\Event\MediaProcessorManipulateImageRenderConfigurationEvent:
+    autowire: false
+  PrototypeIntegration\PrototypeIntegration\Processor\Event\MediaProcessorRenderedEvent:
+    autowire: false
+  PrototypeIntegration\PrototypeIntegration\Processor\Event\PictureProcessorRenderedEvent:
+    autowire: false
+  PrototypeIntegration\PrototypeIntegration\View\Event\ExtbaseViewAdapterVariablesConvertedEvent:
+    autowire: false

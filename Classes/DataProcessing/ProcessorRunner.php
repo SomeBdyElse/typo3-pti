@@ -4,20 +4,21 @@ declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\DataProcessing;
 
+use PrototypeIntegration\PrototypeIntegration\DataProcessing\Event\ProcessorRunnerRanEvent;
 use PrototypeIntegration\PrototypeIntegration\Processor\PtiDataProcessor;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class ProcessorRunner
 {
-    protected Dispatcher $signalSlotDispatcher;
-
     protected ContentObjectRenderer $contentObjectRenderer;
 
-    public function __construct(Dispatcher $signalSlotDispatcher)
+    protected EventDispatcher $eventDispatcher;
+
+    public function __construct(EventDispatcher $eventDispatcher)
     {
-        $this->signalSlotDispatcher = $signalSlotDispatcher;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function injectContentObjectRenderer(ContentObjectRenderer $contentObjectRenderer)
@@ -55,7 +56,8 @@ class ProcessorRunner
             }
         }
 
-        list($data) = $this->signalSlotDispatcher->dispatch(__CLASS__, 'beforeRendering', [$data]);
+        $data = $this->eventDispatcher->dispatch(new ProcessorRunnerRanEvent($data))->getData();
+
         return $data;
     }
 

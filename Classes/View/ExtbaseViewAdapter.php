@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\View;
 
+use PrototypeIntegration\PrototypeIntegration\View\Event\ExtbaseViewAdapterVariablesConvertedEvent;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Mvc\View\AbstractView;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 abstract class ExtbaseViewAdapter extends AbstractView
 {
@@ -15,11 +16,11 @@ abstract class ExtbaseViewAdapter extends AbstractView
 
     protected ?string $template = null;
 
-    protected Dispatcher $signalDispatcher;
+    protected EventDispatcher $eventDispatcher;
 
-    public function injectDispatcher(Dispatcher $signalDispatcher)
+    public function injectDispatcher(EventDispatcher $eventDispatcher)
     {
-        $this->signalDispatcher = $signalDispatcher;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -44,7 +45,7 @@ abstract class ExtbaseViewAdapter extends AbstractView
         }
 
         $variables = $this->convertVariables($this->variables);
-        list($variables) = $this->signalDispatcher->dispatch(__CLASS__, 'beforeRendering', [ $variables ]);
+        $variables = $this->eventDispatcher->dispatch(new ExtbaseViewAdapterVariablesConvertedEvent($variables))->getVariables();
         $view->assignMultiple($variables);
 
         return $view->render();
