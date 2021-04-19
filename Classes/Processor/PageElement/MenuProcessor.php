@@ -6,21 +6,18 @@ namespace PrototypeIntegration\PrototypeIntegration\Processor\PageElement;
 
 use PrototypeIntegration\PrototypeIntegration\Processor\PtiDataProcessor;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class MenuProcessor implements PtiDataProcessor
 {
-    protected \TYPO3\CMS\Frontend\DataProcessing\MenuProcessor $menuDataFetcher;
-
     protected ContentObjectRenderer $contentObjectRenderer;
 
     protected TypoScriptService $typoScriptService;
 
     public function __construct(
-        \TYPO3\CMS\Frontend\DataProcessing\MenuProcessor $menuDataFetcher,
         TypoScriptService $typoScriptService
     ) {
-        $this->menuDataFetcher = $menuDataFetcher;
         $this->typoScriptService = $typoScriptService;
     }
 
@@ -45,12 +42,13 @@ class MenuProcessor implements PtiDataProcessor
 
     protected function getMenuData(array $configuration): ?array
     {
+        $menuDataFetcher = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\DataProcessing\MenuProcessor::class);
+
         $menuConfiguration = $this->typoScriptService->convertPlainArrayToTypoScriptArray(
             $configuration['menuConfiguration']
         );
 
-        /** @var \TYPO3\CMS\Frontend\DataProcessing\MenuProcessor $menuDataFetcher */
-        $menuData = $this->menuDataFetcher->process($this->contentObjectRenderer, [], $menuConfiguration, []);
+        $menuData = $menuDataFetcher->process($this->contentObjectRenderer, [], $menuConfiguration, []);
         return $menuData['menu'] ?? null;
     }
 
