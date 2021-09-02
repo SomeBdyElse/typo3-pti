@@ -55,6 +55,8 @@ class VideoProcessor
                 return $this->renderMp4Video($file);
             case 'video/youtube':
                 return $this->renderYoutubeVideo($file);
+            case 'video/vimeo':
+                return $this->renderVimeoVideo($file);
         }
 
         return null;
@@ -91,6 +93,24 @@ class VideoProcessor
 
         return sprintf(
             'https://www.youtube-nocookie.com/embed/%s',
+            $this->getOnlineMediaHelper($file)->getOnlineMediaId($orgFile)
+        );
+    }
+
+    /**
+     * @param \TYPO3\CMS\Core\Resource\FileInterface $file
+     * @return string
+     */
+    protected function renderVimeoVideo(FileInterface $file): string
+    {
+        if ($file instanceof FileReference) {
+            $orgFile = $file->getOriginalFile();
+        } else {
+            $orgFile = $file;
+        }
+
+        return sprintf(
+            'https://player.vimeo.com/video/%s?dnt=1',
             $this->getOnlineMediaHelper($file)->getOnlineMediaId($orgFile)
         );
     }
