@@ -97,10 +97,6 @@ class VideoProcessor
         );
     }
 
-    /**
-     * @param \TYPO3\CMS\Core\Resource\FileInterface $file
-     * @return string
-     */
     protected function renderVimeoVideo(FileInterface $file): string
     {
         if ($file instanceof FileReference) {
