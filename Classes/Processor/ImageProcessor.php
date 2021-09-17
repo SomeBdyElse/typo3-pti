@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -12,21 +13,27 @@ class ImageProcessor
 {
     protected ContentObjectRenderer $contentObject;
 
+    protected EventDispatcherInterface $eventDispatcher;
+
     protected TypoScriptFrontendController $tsfe;
 
     /**
      * @param ContentObjectRenderer $contentObject
+     * @param EventDispatcherInterface $eventDispatcher
      * @SuppressWarnings(PHPMD.Superglobals)
      */
-    public function __construct(ContentObjectRenderer $contentObject)
+    public function __construct(ContentObjectRenderer $contentObject, EventDispatcherInterface $eventDispatcher)
     {
         $this->contentObject = $contentObject;
+        $this->eventDispatcher = $eventDispatcher;
         $this->tsfe = $GLOBALS['TSFE'];
     }
 
     public function renderImage(FileInterface $file, array $conf = []): array
     {
         $defaultImageResource = $this->contentObject->getImgResource($file, $conf);
+        $this->runImageResourceManipulationEvent($defaultImageResource);
+
         $retinaImageResource = self::renderRetinaImage($file, $conf);
 
         $assetOptions = [
@@ -45,15 +52,17 @@ class ImageProcessor
     }
 
     /**
-     * @param \TYPO3\CMS\Core\Resource\FileInterface $image
+     * @param \TYPO3\CMS\Core\Resource\FileInterface $file
      * @param array $configuration
      * @return string
      */
-    protected function renderRetinaImage(FileInterface $image, array $configuration): string
+    protected function renderRetinaImage(FileInterface $file, array $configuration): string
     {
         $retinaConfiguration = $this->getImageConfigurationForRetina($configuration);
-        $image = $this->contentObject->getImgResource($image, $retinaConfiguration);
-        return $image[3];
+        $defaultImageResource = $this->contentObject->getImgResource($file, $retinaConfiguration);
+        $this->runImageResourceManipulationEvent($defaultImageResource);
+
+        return $defaultImageResource[3];
     }
 
     /**
@@ -115,5 +124,12 @@ class ImageProcessor
             }
         }
         return $retinaConfig;
+    }
+
+    private function runImageResourceManipulationEvent(array &$defaultImageResource): void
+    {
+        $event = new Event\ImageProcessorManipulateImgResourceResultEvent($defaultImageResource);
+        $event = $this->eventDispatcher->dispatch($event);
+        $defaultImageResource = $event->getRenderedResult();
     }
 }

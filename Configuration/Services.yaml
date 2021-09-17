@@ -17,5 +17,7 @@ services:
     autowire: false
   PrototypeIntegration\PrototypeIntegration\Processor\Event\PictureProcessorRenderedEvent:
     autowire: false
+  PrototypeIntegration\PrototypeIntegration\Processor\Event\ImageProcessorManipulateImgResourceResultEvent:
+    autowire: false
   PrototypeIntegration\PrototypeIntegration\View\Event\ExtbaseViewAdapterVariablesConvertedEvent:
     autowire: false
