@@ -10,9 +10,12 @@ class ImageProcessorManipulateImgResourceResultEvent
 {
     protected array $renderedResult;
 
-    public function __construct(array $renderedResult)
+    protected array $imageConfiguration;
+
+    public function __construct(array $renderedResult, array $imageConfiguration)
     {
         $this->renderedResult = $renderedResult;
+        $this->imageConfiguration = $imageConfiguration;
     }
 
     public function getRenderedResult(): array
@@ -23,5 +26,10 @@ class ImageProcessorManipulateImgResourceResultEvent
     public function setRenderedResult(array $renderedResult): void
     {
         $this->renderedResult = $renderedResult;
+    }
+
+    public function getImageConfiguration(): array
+    {
+        return $this->imageConfiguration;
     }
 }

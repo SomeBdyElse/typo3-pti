@@ -32,7 +32,7 @@ class ImageProcessor
     public function renderImage(FileInterface $file, array $conf = []): array
     {
         $defaultImageResource = $this->contentObject->getImgResource($file, $conf);
-        $this->runImageResourceManipulationEvent($defaultImageResource);
+        $this->runImageResourceManipulationEvent($defaultImageResource, $conf);
 
         $retinaImageResource = self::renderRetinaImage($file, $conf);
 
@@ -60,7 +60,7 @@ class ImageProcessor
     {
         $retinaConfiguration = $this->getImageConfigurationForRetina($configuration);
         $defaultImageResource = $this->contentObject->getImgResource($file, $retinaConfiguration);
-        $this->runImageResourceManipulationEvent($defaultImageResource);
+        $this->runImageResourceManipulationEvent($defaultImageResource, $retinaConfiguration);
 
         return $defaultImageResource[3];
     }
@@ -126,9 +126,9 @@ class ImageProcessor
         return $retinaConfig;
     }
 
-    private function runImageResourceManipulationEvent(array &$defaultImageResource): void
+    private function runImageResourceManipulationEvent(array &$defaultImageResource, array $imageConfiguration = []): void
     {
-        $event = new Event\ImageProcessorManipulateImgResourceResultEvent($defaultImageResource);
+        $event = new Event\ImageProcessorManipulateImgResourceResultEvent($defaultImageResource, $imageConfiguration);
         $event = $this->eventDispatcher->dispatch($event);
         $defaultImageResource = $event->getRenderedResult();
     }
