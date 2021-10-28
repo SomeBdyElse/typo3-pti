@@ -30,6 +30,7 @@ class PtiContentObject extends AbstractContentObject
 
         $this->typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
         $this->processorRunner = GeneralUtility::makeInstance(ProcessorRunner::class);
+        $this->processorRunner->injectContentObjectRenderer($this->cObj);
 
         $viewResolverClass = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['pti']['view']['viewResolver'];
         $this->viewResolver = GeneralUtility::makeInstance($viewResolverClass);
