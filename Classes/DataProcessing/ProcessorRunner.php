@@ -12,8 +12,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class ProcessorRunner
 {
-    protected ContentObjectRenderer $contentObjectRenderer;
-
     protected EventDispatcher $eventDispatcher;
 
     public function __construct(EventDispatcher $eventDispatcher)
@@ -21,13 +19,9 @@ class ProcessorRunner
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function injectContentObjectRenderer(ContentObjectRenderer $contentObjectRenderer)
+    public function processData(ContentObjectRenderer $contentObjectRenderer, array $conf, ?string $table): ?array
     {
-        $this->contentObjectRenderer = $contentObjectRenderer;
-    }
-
-    public function processData(array $data, array $conf, ?string $table): ?array
-    {
+        $data = $contentObjectRenderer->data;
         foreach ($conf['dataProcessors'] ?: [] as $dataProcessorConfiguration) {
             // Get classname
             $dataProcessorClassName = null;
@@ -43,14 +37,19 @@ class ProcessorRunner
                 throw new \RuntimeException('Missing className for dataProcessor', 1521297809618);
             }
 
-            $data = $this->runDataProcessor($dataProcessorClassName, $dataProcessorConfiguration, $data, $table);
+            $data = $this->runDataProcessor(
+                $dataProcessorClassName,
+                $dataProcessorConfiguration,
+                $contentObjectRenderer,
+                $table
+            );
             if (is_null($data)) {
                 return null;
             }
         }
 
-        if ($this->contentObjectRenderer->getCurrentTable() == 'tt_content') {
-            $uid = $this->contentObjectRenderer->data['_LOCALIZED_UID'] ?? $this->contentObjectRenderer->data['uid'] ?? null;
+        if ($contentObjectRenderer->getCurrentTable() == 'tt_content') {
+            $uid = $contentObjectRenderer->data['_LOCALIZED_UID'] ?? $contentObjectRenderer->data['uid'] ?? null;
             if (isset($uid)) {
                 $data['uid'] = $uid;
             }
@@ -61,8 +60,11 @@ class ProcessorRunner
         return $data;
     }
 
-    protected function runDataProcessor(string $className, array $configuration, array $data, string $table): ?array
-    {
+    protected function runDataProcessor(
+        string $className,
+        array $configuration,
+        ContentObjectRenderer $contentObjectRenderer
+    ): ?array {
         // Instantiate class
         $dataProcessor = GeneralUtility::makeInstance($className);
 
@@ -74,14 +76,10 @@ class ProcessorRunner
         }
 
         if (method_exists($dataProcessor, 'injectContentObjectRenderer')) {
-            if (! isset($this->contentObjectRenderer)) {
-                $this->contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-                $this->contentObjectRenderer->start($data, $table);
-            }
-            $dataProcessor->injectContentObjectRenderer($this->contentObjectRenderer);
+            $dataProcessor->injectContentObjectRenderer($contentObjectRenderer);
         }
 
-        $data = $dataProcessor->process($data, $configuration);
+        $data = $dataProcessor->process($contentObjectRenderer->data, $configuration);
         return $data;
     }
 }

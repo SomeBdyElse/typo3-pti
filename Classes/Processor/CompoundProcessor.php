@@ -135,8 +135,7 @@ class CompoundProcessor implements PtiDataProcessor
 
         /** @var ProcessorRunner $processorRunner */
         $processorRunner = GeneralUtility::makeInstance(ProcessorRunner::class);
-        $processorRunner->injectContentObjectRenderer($contentObjectRenderer);
-        $processedData = $processorRunner->processData($record, $plainConf, $table);
+        $processedData = $processorRunner->processData($contentObjectRenderer, $plainConf, $table);
         if (!isset($processedData['_templateName']) && isset($conf['templateName'])) {
             $processedData['_templateName'] = $conf['templateName'];
         }
