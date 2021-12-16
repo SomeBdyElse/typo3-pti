@@ -64,7 +64,6 @@ class ProcessorRunner
         string $className,
         array $configuration,
         ContentObjectRenderer $contentObjectRenderer,
-        string $table
     ): ?array {
         // Instantiate class
         $dataProcessor = GeneralUtility::makeInstance($className);
