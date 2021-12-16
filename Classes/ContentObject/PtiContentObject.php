@@ -30,7 +30,6 @@ class PtiContentObject extends AbstractContentObject
 
         $this->typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
         $this->processorRunner = GeneralUtility::makeInstance(ProcessorRunner::class);
-        $this->processorRunner->injectContentObjectRenderer($this->cObj);
 
         $viewResolverClass = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['pti']['view']['viewResolver'];
         $this->viewResolver = GeneralUtility::makeInstance($viewResolverClass);
@@ -48,7 +47,7 @@ class PtiContentObject extends AbstractContentObject
             $this->templateName = $this->conf['templateName'];
         }
 
-        $data = $this->processorRunner->processData($this->cObj->data, $this->conf, $this->cObj->getCurrentTable());
+        $data = $this->processorRunner->processData($this->cObj, $this->conf, $this->cObj->getCurrentTable());
         $templateName = $this->getTemplateName();
 
         $view = $this->viewResolver->getViewForContentObject($data ?: [], $templateName);
