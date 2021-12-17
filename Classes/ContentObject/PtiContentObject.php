@@ -48,9 +48,12 @@ class PtiContentObject extends AbstractContentObject
         }
 
         $data = $this->processorRunner->processData($this->cObj, $this->conf, $this->cObj->getCurrentTable());
-        $templateName = $this->getTemplateName();
+        if (!isset($data)) {
+            return '';
+        }
 
-        $view = $this->viewResolver->getViewForContentObject($data ?: [], $templateName);
+        $templateName = $this->getTemplateName();
+        $view = $this->viewResolver->getViewForContentObject($data, $templateName);
         $view->setVariables($data);
 
         if ($view instanceof TemplateBasedView) {
