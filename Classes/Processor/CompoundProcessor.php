@@ -78,7 +78,9 @@ class CompoundProcessor implements PtiDataProcessor
                             $table,
                             $data
                         );
-                        $contentData[$nodeKey] = $contentObjectResult;
+                        if (isset($contentObjectResult)) {
+                            $contentData[$nodeKey] = $contentObjectResult;
+                        }
                 }
             } elseif (is_string($node)) {
                 $contentData[$nodeKey] = $node;
@@ -109,7 +111,10 @@ class CompoundProcessor implements PtiDataProcessor
 
             switch ($value) {
                 case 'PTI':
-                    $contentData[] = $this->processPtiContentObjectData($property, $record, $table);
+                    $contentObjectResult = $this->processPtiContentObjectData($property, $record, $table);
+                    if (isset($contentObjectResult)) {
+                        $contentData[] = $contentObjectResult;
+                    }
                     break;
                 default:
                     $contentResponse = $this->renderContentObject(
