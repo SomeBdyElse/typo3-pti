@@ -41,7 +41,7 @@ class FileSizeProcessor
             '%s %s',
             number_format(
                 round($bytes, 4 * $configuration['decimals']),
-                $configuration['decimals'],
+                (int)$configuration['decimals'],
                 $configuration['decimalSeparator'],
                 $configuration['thousandsSeparator']
             ),
