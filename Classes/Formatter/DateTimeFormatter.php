@@ -86,7 +86,7 @@ class DateTimeFormatter
      * @param $value @see DateTimeFormatter::format
      * @param string|null $locale @see DateTimeFormatter::format
      * @param string|null $pattern @see DateTimeFormatter::format
-     * @return null|string The formatted string or, if an error occurred, null
+     * @return string|null The formatted string or, if an error occurred, null
      */
     public function formatWithPattern(
         $value,
