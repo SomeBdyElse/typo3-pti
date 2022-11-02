@@ -27,13 +27,17 @@ class DateTimeFormatter
      * @param string|null $locale
      * The locale e.G. "en_US" to use. Will default to the current php locale.
      *
+     * @param string|null $pattern
+     * The pattern allows a custom format. @link http://php.net/manual/en/intl.intldateformatter-constants.php
+     *
      * @return string The formatted string or, if an error occurred, null
      */
     public function format(
         $value,
         int $dateType = IntlDateFormatter::MEDIUM,
         int $timeType = IntlDateFormatter::MEDIUM,
-        ?string $locale = null
+        ?string $locale = null,
+        ?string $pattern = null
     ): ?string {
         if (is_null($locale)) {
             // get current locale
@@ -46,7 +50,10 @@ class DateTimeFormatter
         $dateFormatter = new IntlDateFormatter(
             $locale,
             $dateType,
-            $timeType
+            $timeType,
+            null,
+            null,
+            $pattern
         );
 
         $result = $dateFormatter->format($value);
@@ -71,5 +78,21 @@ class DateTimeFormatter
         ?string $locale = null
     ): ?string {
         return $this->format($value, $dateType, IntlDateFormatter::NONE, $locale);
+    }
+
+    /**
+     * Convenience method to format the date and/or the time of a given value with custom defined pattern
+     *
+     * @param $value @see DateTimeFormatter::format
+     * @param string|null $locale @see DateTimeFormatter::format
+     * @param string|null $pattern @see DateTimeFormatter::format
+     * @return null|string The formatted string or, if an error occurred, null
+     */
+    public function formatWithPattern(
+        $value,
+        ?string $locale = null,
+        ?string $pattern = null
+    ): ?string {
+        return $this->format($value, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $locale, $pattern);
     }
 }
