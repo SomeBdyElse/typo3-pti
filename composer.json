@@ -21,11 +21,6 @@
       "PrototypeIntegration\\PrototypeIntegration\\": "Classes/"
     }
   },
-  "extra": {
-    "typo3/cms": {
-      "extension-key": "pti"
-    }
-  },
   "replace": {
     "typo3-ter/pti": "self.version"
   },
