@@ -2,17 +2,17 @@
 
 namespace PrototypeIntegration\PrototypeIntegration\Tests\Unit\Processor;
 
-use PHPUnit\Framework\TestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use PrototypeIntegration\PrototypeIntegration\Processor\FileSizeProcessor;
 
-class FileSizeProcessorTest extends TestCase
+class FileSizeProcessorTest extends UnitTestCase
 {
     /**
      * @var FileSizeProcessor
      */
     protected $fileSizeProcessor;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->fileSizeProcessor = new FileSizeProcessor();

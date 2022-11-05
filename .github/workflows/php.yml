@@ -13,3 +13,16 @@ jobs:
       uses: OskarStark/php-cs-fixer-ga@2.17.3
       with:
         args: --diff --dry-run
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 7.4
+        tools: composer
+        extensions: pdo, sqlite3
+
+    - name: composer install
+      run: composer install -n
+
+    - name: phpunit
+      run: .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit

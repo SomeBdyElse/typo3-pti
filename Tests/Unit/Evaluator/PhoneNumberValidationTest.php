@@ -2,17 +2,17 @@
 
 namespace PrototypeIntegration\PrototypeIntegration\Tests\Unit\Evaluator;
 
-use PHPUnit\Framework\TestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use PrototypeIntegration\PrototypeIntegration\Evaluator\PhoneNumberValidation;
 
-class PhoneNumberValidationTest extends TestCase
+class PhoneNumberValidationTest extends UnitTestCase
 {
     /**
      * @var PhoneNumberValidation
      */
     protected $validator;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->validator = $this->getMockBuilder(PhoneNumberValidation::class)

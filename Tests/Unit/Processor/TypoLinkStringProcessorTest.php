@@ -2,12 +2,12 @@
 
 namespace PrototypeIntegration\PrototypeIntegration\Tests\Unit\Processor;
 
-use PHPUnit\Framework\TestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use PrototypeIntegration\PrototypeIntegration\Processor\TypoLinkStringProcessor;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Service\TypoLinkCodecService;
 
-class TypoLinkStringProcessorTest extends TestCase
+class TypoLinkStringProcessorTest extends UnitTestCase
 {
     protected $mockTypoLinkUrlResult = 'https://www.example.com/url';
 
@@ -16,7 +16,7 @@ class TypoLinkStringProcessorTest extends TestCase
      */
     protected $typoLinkStringProcessor;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
