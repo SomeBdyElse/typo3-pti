@@ -53,7 +53,7 @@ class PreviewImageProcessor
 
         if (isset($configuration['fallbackPreviewImage']) && ! empty($configuration['fallbackPreviewImage'])) {
             /**@var ResourceFactory $resourceFactory*/
-            $resourceFactory = ResourceFactory::getInstance();
+            $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
             $file = $resourceFactory->retrieveFileOrFolderObject($configuration['fallbackPreviewImage']);
         }
 
