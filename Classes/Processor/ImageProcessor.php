@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -27,6 +28,13 @@ class ImageProcessor
     public function renderImage(FileInterface $file, array $conf = []): array
     {
         $defaultImageResource = $this->contentObject->getImgResource($file, $conf);
+        if (is_null($defaultImageResource[3])) {
+            throw new InvalidArgumentException(
+                sprintf('Invalid resource data of asset with identifier "%s"', $file->getIdentifier()),
+                1_678_088_092
+            );
+        }
+
         $retinaImageResource = self::renderRetinaImage($file, $conf);
 
         $assetOptions = [
