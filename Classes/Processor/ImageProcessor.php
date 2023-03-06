@@ -64,7 +64,7 @@ class ImageProcessor
      */
     protected function addAbsRefPrefix(string $uri): string
     {
-        return $this->tsfe->absRefPrefix . $uri;
+        return str_replace('//', '/', $this->tsfe->absRefPrefix . $uri);
     }
 
     /**
