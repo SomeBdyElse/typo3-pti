@@ -7,6 +7,7 @@ namespace PrototypeIntegration\PrototypeIntegration\Processor;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use UnexpectedValueException;
 
 class ImageProcessor
 {
@@ -27,6 +28,13 @@ class ImageProcessor
     public function renderImage(FileInterface $file, array $conf = []): array
     {
         $defaultImageResource = $this->contentObject->getImgResource($file, $conf);
+        if (is_null($defaultImageResource) || !isset($defaultImageResource[3])) {
+            throw new UnexpectedValueException(
+                sprintf('An undefined error occurred during processing the asset with identifier "%s"', $file->getIdentifier()),
+                1_678_088_092
+            );
+        }
+
         $retinaImageResource = self::renderRetinaImage($file, $conf);
 
         $assetOptions = [
@@ -45,14 +53,22 @@ class ImageProcessor
     }
 
     /**
-     * @param \TYPO3\CMS\Core\Resource\FileInterface $image
+     * @param \TYPO3\CMS\Core\Resource\FileInterface $file
      * @param array $configuration
      * @return string
      */
-    protected function renderRetinaImage(FileInterface $image, array $configuration): string
+    protected function renderRetinaImage(FileInterface $file, array $configuration): string
     {
         $retinaConfiguration = $this->getImageConfigurationForRetina($configuration);
-        $image = $this->contentObject->getImgResource($image, $retinaConfiguration);
+        $image = $this->contentObject->getImgResource($file, $retinaConfiguration);
+
+        if (is_null($image) || !isset($image[3])) {
+            throw new UnexpectedValueException(
+                sprintf('An undefined error occurred during processing the asset with retina configuration for identifier "%s"', $file->getIdentifier()),
+                1_678_787_266
+            );
+        }
+
         return $image[3];
     }
 
