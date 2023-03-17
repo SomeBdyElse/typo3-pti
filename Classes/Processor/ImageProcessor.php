@@ -25,7 +25,10 @@ class ImageProcessor
         $this->tsfe = $GLOBALS['TSFE'];
     }
 
-    public function renderImage(FileInterface $file, array $conf = []): array
+    /**
+     * @param string|FileInterface $file
+     */
+    public function renderImage($file, array $conf = []): array
     {
         $defaultImageResource = $this->contentObject->getImgResource($file, $conf);
         if (is_null($defaultImageResource) || !isset($defaultImageResource[3])) {
@@ -53,11 +56,9 @@ class ImageProcessor
     }
 
     /**
-     * @param \TYPO3\CMS\Core\Resource\FileInterface $file
-     * @param array $configuration
-     * @return string
+     * @param string|FileInterface $file
      */
-    protected function renderRetinaImage(FileInterface $file, array $configuration): string
+    protected function renderRetinaImage($file, array $configuration): string
     {
         $retinaConfiguration = $this->getImageConfigurationForRetina($configuration);
         $image = $this->contentObject->getImgResource($file, $retinaConfiguration);
