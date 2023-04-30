@@ -60,11 +60,23 @@ class PtiContentObject extends AbstractContentObject
             $view->setTemplate($templateName);
         }
 
+        $this->lastChanged();
+
         return $view->render();
     }
 
     protected function getTemplateName()
     {
         return $this->templateName;
+    }
+
+    protected function lastChanged(): void
+    {
+        $contentObjectRenderer = $this->getContentObjectRenderer();
+        $table = $contentObjectRenderer->getCurrentTable();
+        $timestampColumn = $GLOBALS['TCA'][$table]['ctrl']['tstamp'] ?? 'tstamp';
+        if (isset($contentObjectRenderer->data[$timestampColumn])) {
+            $contentObjectRenderer->lastChanged($contentObjectRenderer->data[$timestampColumn]);
+        }
     }
 }

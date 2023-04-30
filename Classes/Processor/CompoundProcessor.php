@@ -134,6 +134,7 @@ class CompoundProcessor implements PtiDataProcessor
         /** @var ContentObjectRenderer $contentObjectRenderer */
         $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $contentObjectRenderer->start($record, $table);
+        $this->lastChanged($contentObjectRenderer, $table, $record);
 
         $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
         $plainConf = $typoScriptService->convertTypoScriptArrayToPlainArray($conf);
@@ -168,6 +169,7 @@ class CompoundProcessor implements PtiDataProcessor
             $nodeValue,
             $contentObjectConfiguration
         );
+        $this->lastChanged($contentObjectRenderer, $table, $data);
 
         $data = json_decode($contentObjectResult, true);
         if ($data !== null) {
@@ -175,5 +177,13 @@ class CompoundProcessor implements PtiDataProcessor
         }
 
         return $contentObjectResult;
+    }
+
+    protected function lastChanged(ContentObjectRenderer $contentObjectRenderer, string $table, array $data)
+    {
+        $timestampeColumn = $GLOBALS['TCA'][$table]['ctrl']['tstamp'] ?? 'tstamp';
+        if (isset($data[$timestampeColumn])) {
+            $contentObjectRenderer->lastChanged($data[$timestampeColumn]);
+        }
     }
 }
