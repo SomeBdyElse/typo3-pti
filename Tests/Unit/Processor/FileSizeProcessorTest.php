@@ -2,8 +2,8 @@
 
 namespace PrototypeIntegration\PrototypeIntegration\Tests\Unit\Processor;
 
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use PrototypeIntegration\PrototypeIntegration\Processor\FileSizeProcessor;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class FileSizeProcessorTest extends UnitTestCase
 {
@@ -33,7 +33,7 @@ class FileSizeProcessorTest extends UnitTestCase
     /**
      * @return array
      */
-    public function defaultFormatDataProvider(): array
+    public static function defaultFormatDataProvider(): array
     {
         return [
             [

@@ -5,32 +5,24 @@ declare(strict_types=1);
 namespace PrototypeIntegration\PrototypeIntegration\ContentObject;
 
 use PrototypeIntegration\PrototypeIntegration\DataProcessing\ProcessorRunner;
-use PrototypeIntegration\PrototypeIntegration\View\TemplateBasedView;
+use PrototypeIntegration\PrototypeIntegration\View\TemplateBasedViewInterface;
 use PrototypeIntegration\PrototypeIntegration\View\ViewResolver;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class PtiContentObject extends AbstractContentObject
 {
-    protected TypoScriptService $typoScriptService;
-
-    protected ProcessorRunner $processorRunner;
-
     protected ViewResolver $viewResolver;
 
     protected array $conf;
 
     protected string $templateName;
 
-    public function __construct(ContentObjectRenderer $contentObjectRenderer)
-    {
-        parent::__construct($contentObjectRenderer);
-
-        $this->typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
-        $this->processorRunner = GeneralUtility::makeInstance(ProcessorRunner::class);
-
+    public function __construct(
+        protected TypoScriptService $typoScriptService,
+        protected ProcessorRunner $processorRunner,
+    ) {
         $viewResolverClass = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['pti']['view']['viewResolver'];
         $this->viewResolver = GeneralUtility::makeInstance($viewResolverClass);
     }
@@ -56,7 +48,7 @@ class PtiContentObject extends AbstractContentObject
         $view = $this->viewResolver->getViewForContentObject($data, $templateName);
         $view->setVariables($data);
 
-        if ($view instanceof TemplateBasedView) {
+        if ($view instanceof TemplateBasedViewInterface) {
             $view->setTemplate($templateName);
         }
 

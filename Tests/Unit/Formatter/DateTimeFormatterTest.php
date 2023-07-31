@@ -2,12 +2,12 @@
 
 namespace PrototypeIntegration\PrototypeIntegration\Tests\Formatter;
 
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use PrototypeIntegration\PrototypeIntegration\Formatter\DateTimeFormatter;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class DateTimeFormatterTest extends UnitTestCase
 {
-    public function provideTestDataWithType(): array
+    public static function provideTestDataWithType(): array
     {
         return [
             [\IntlDateFormatter::MEDIUM, \IntlDateFormatter::MEDIUM, 'en-US', 'Oct 20, 2022, 10:00:00 AM'],
@@ -29,7 +29,7 @@ class DateTimeFormatterTest extends UnitTestCase
         self::assertEquals($expected, $result);
     }
 
-    public function provideTestDataWithPattern(): array
+    public static function provideTestDataWithPattern(): array
     {
         return [
             ['yyyy-MM-dd', 'en-US', '2022-10-20'],

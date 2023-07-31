@@ -2,10 +2,10 @@
 
 namespace PrototypeIntegration\PrototypeIntegration\Tests\Unit\Processor;
 
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use PrototypeIntegration\PrototypeIntegration\Processor\TypoLinkStringProcessor;
+use TYPO3\CMS\Core\LinkHandling\TypoLinkCodecService;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Service\TypoLinkCodecService;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class TypoLinkStringProcessorTest extends UnitTestCase
 {
@@ -20,7 +20,7 @@ class TypoLinkStringProcessorTest extends UnitTestCase
     {
         parent::setUp();
 
-        $typoLinkCodeService = new TypoLinkCodecService();
+        $typoLinkCodecService = new TypoLinkCodecService();
 
         $contentObjectRendererMock = $this->createMock(ContentObjectRenderer::class);
         $contentObjectRendererMock
@@ -29,7 +29,7 @@ class TypoLinkStringProcessorTest extends UnitTestCase
         ;
         /** @var ContentObjectRenderer $contentObjectRendererMock */
         $this->typoLinkStringProcessor = new TypoLinkStringProcessor(
-            $typoLinkCodeService,
+            $typoLinkCodecService,
             $contentObjectRendererMock
         );
     }

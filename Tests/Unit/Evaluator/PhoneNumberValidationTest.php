@@ -2,8 +2,8 @@
 
 namespace PrototypeIntegration\PrototypeIntegration\Tests\Unit\Evaluator;
 
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use PrototypeIntegration\PrototypeIntegration\Evaluator\PhoneNumberValidation;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class PhoneNumberValidationTest extends UnitTestCase
 {
@@ -16,7 +16,7 @@ class PhoneNumberValidationTest extends UnitTestCase
     {
         parent::setUp();
         $this->validator = $this->getMockBuilder(PhoneNumberValidation::class)
-            ->setMethods(['addFlashMessage', 'translate'])
+            ->onlyMethods(['addFlashMessage', 'translate'])
             ->getMock();
     }
 
@@ -40,7 +40,7 @@ class PhoneNumberValidationTest extends UnitTestCase
         self::assertEquals($expected, $this->validator->evaluateFieldValue($inputString, '', $isSet));
     }
 
-    public function telephoneIsProperlyEvaluatedDataProvider(): array
+    public static function telephoneIsProperlyEvaluatedDataProvider(): array
     {
         return [
             'empty string' => ['', ''],

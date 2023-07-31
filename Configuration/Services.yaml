@@ -9,6 +9,10 @@ services:
     resource: '../Classes/*'
 
   # Do not auto wire constructors of event classes
+  PrototypeIntegration\PrototypeIntegration\ContentObject\PtiContentObject:
+    tags:
+      - name: frontend.contentobject
+        identifier: 'PTI'
   PrototypeIntegration\PrototypeIntegration\DataProcessing\Event\ProcessorRunnerRanEvent:
     autowire: false
   PrototypeIntegration\PrototypeIntegration\Processor\Event\MediaProcessorManipulateImageRenderConfigurationEvent:
@@ -18,4 +22,6 @@ services:
   PrototypeIntegration\PrototypeIntegration\Processor\Event\PictureProcessorRenderedEvent:
     autowire: false
   PrototypeIntegration\PrototypeIntegration\View\Event\ExtbaseViewAdapterVariablesConvertedEvent:
+    autowire: false
+  PrototypeIntegration\PrototypeIntegration\View\ExtbaseViewAdapterContext:
     autowire: false

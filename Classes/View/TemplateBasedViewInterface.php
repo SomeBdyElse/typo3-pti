@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\View;
 
-interface TemplateBasedView
+interface TemplateBasedViewInterface
 {
     public function setTemplate(string $templateIdentifier);
 
