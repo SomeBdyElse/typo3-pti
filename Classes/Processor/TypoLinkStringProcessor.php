@@ -27,7 +27,7 @@ class TypoLinkStringProcessor
         $uri = $this->contentObject->typoLink_URL(
             [
                 'parameter' => $typoLinkParts['url'],
-                'additionalParams' => $typoLinkParts['additionalParams']
+                'additionalParams' => $typoLinkParts['additionalParams'],
             ]
         );
 
@@ -40,8 +40,8 @@ class TypoLinkStringProcessor
                 'uri' => $uri,
                 'target' => $typoLinkParts['target'],
                 'class' => $typoLinkParts['class'],
-                'title' => $typoLinkParts['title']
-            ]
+                'title' => $typoLinkParts['title'],
+            ],
         ];
     }
 }

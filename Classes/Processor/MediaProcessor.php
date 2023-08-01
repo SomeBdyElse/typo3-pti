@@ -106,7 +106,7 @@ class MediaProcessor
             'image' => $this->pictureProcessor->renderPicture(
                 $mediaElement,
                 $imageConfiguration
-            )
+            ),
         ];
 
         if (! empty($mediaData) && ! empty($imageThumbnailConfiguration)) {

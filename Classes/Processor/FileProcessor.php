@@ -57,7 +57,7 @@ class FileProcessor
         'downloadDescriptionFallbackField' => '',
         'maxCharacters' => PHP_INT_MAX,
         'append' => '...',
-        'respectWordBoundaries' => true
+        'respectWordBoundaries' => true,
     ];
 
     /**
@@ -127,8 +127,8 @@ class FileProcessor
                     'description' => $description,
                     'name' => $item->getTitle(),
                     'extension' => $item->getExtension(),
-                    'size' => $this->fileSizeProcessor->formatFileSize($item->getSize(), $fileFormatConfiguration)
-                ]
+                    'size' => $this->fileSizeProcessor->formatFileSize($item->getSize(), $fileFormatConfiguration),
+                ],
             ],
         ];
 

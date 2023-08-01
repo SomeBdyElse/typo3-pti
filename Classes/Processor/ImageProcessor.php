@@ -45,7 +45,7 @@ class ImageProcessor
             ],
             'width' => $defaultImageResource[0],
             'height' => $defaultImageResource[1],
-            'ratio' => $defaultImageResource[0] / $defaultImageResource[1]
+            'ratio' => $defaultImageResource[0] / $defaultImageResource[1],
         ];
 
         self::clearAssetOptions($assetOptions, $conf);

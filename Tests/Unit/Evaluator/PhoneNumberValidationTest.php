@@ -47,7 +47,7 @@ class PhoneNumberValidationTest extends UnitTestCase
             'with preceding plus' => ['+43 699 12 54 12 1', '+43 699 12 54 12 1'],
             'with preceding 00' => ['0043 699 12 54 12 1', '+43 699 12 54 12 1'],
             'national format return same' => ['0699 12 54 12 1', '0699 12 54 12 1'],
-            'with non numeric characters' => ['+43 699 12 54 12 1 -D:4', '+43 699 12 54 12 1 4']
+            'with non numeric characters' => ['+43 699 12 54 12 1 -D:4', '+43 699 12 54 12 1 4'],
         ];
     }
 }

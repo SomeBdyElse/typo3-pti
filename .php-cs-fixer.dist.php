@@ -62,6 +62,7 @@ return (new \PhpCsFixer\Config())
         'single_quote' => true,
         'single_space_around_construct' => true,
         'single_line_comment_style' => ['comment_types' => ['hash']],
+        'trailing_comma_in_multiline' => ['elements' => ['arrays']],
         'whitespace_after_comma_in_array' => ['ensure_single_space' => true],
         'yoda_style' => ['equal' => false, 'identical' => false, 'less_and_greater' => false],
     ]);

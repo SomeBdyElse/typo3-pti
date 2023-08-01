@@ -16,7 +16,7 @@ class FileMetadataProcessor
             'copyright' => 'copyright',
             'link' => 'link',
             'alternative' => 'alternative',
-            'fileType' => 'extension'
+            'fileType' => 'extension',
         ];
 
         $metaData = [];
