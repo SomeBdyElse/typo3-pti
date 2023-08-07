@@ -2,7 +2,7 @@
 
 namespace PrototypeIntegration\PrototypeIntegration\View;
 
-interface ViewAdapterContextAware
+interface ExtbaseViewAdapterContextAware
 {
     public function setViewAdapterContext(ExtbaseViewAdapterContext $viewAdapterContext): void;
 }

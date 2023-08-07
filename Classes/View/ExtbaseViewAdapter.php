@@ -10,7 +10,10 @@ use TYPO3\CMS\Core\Utility\Exception\NotImplementedMethodException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\View\AbstractView;
 
-abstract class ExtbaseViewAdapter extends AbstractView implements ViewAdapterContextAware
+/**
+ * @deprecated use \PrototypeIntegration\PrototypeIntegration\View\ViewAdapter instead
+ */
+abstract class ExtbaseViewAdapter extends AbstractView implements ExtbaseViewAdapterContextAware
 {
     protected ?array $settings;
 
