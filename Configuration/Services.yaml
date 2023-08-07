@@ -25,3 +25,5 @@ services:
     autowire: false
   PrototypeIntegration\PrototypeIntegration\View\ExtbaseViewAdapterContext:
     autowire: false
+
+  PrototypeIntegration\PrototypeIntegration\View\ViewResolverInterface: '@PrototypeIntegration\PrototypeIntegration\View\DefaultViewResolver'

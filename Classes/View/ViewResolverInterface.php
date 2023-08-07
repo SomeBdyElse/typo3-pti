@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\View;
 
-interface ViewResolver
+interface ViewResolverInterface
 {
     public function getViewForContentObject(
         ?array $dbRow = [],

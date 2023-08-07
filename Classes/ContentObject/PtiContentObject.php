@@ -5,16 +5,12 @@ declare(strict_types=1);
 namespace PrototypeIntegration\PrototypeIntegration\ContentObject;
 
 use PrototypeIntegration\PrototypeIntegration\DataProcessing\ProcessorRunner;
-use PrototypeIntegration\PrototypeIntegration\View\TemplateBasedViewInterface;
-use PrototypeIntegration\PrototypeIntegration\View\ViewResolver;
+use PrototypeIntegration\PrototypeIntegration\View\ViewResolverInterface;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 
 class PtiContentObject extends AbstractContentObject
 {
-    protected ViewResolver $viewResolver;
-
     protected array $conf;
 
     protected string $templateName;
@@ -22,9 +18,8 @@ class PtiContentObject extends AbstractContentObject
     public function __construct(
         protected TypoScriptService $typoScriptService,
         protected ProcessorRunner $processorRunner,
+        protected ViewResolverInterface $viewResolver,
     ) {
-        $viewResolverClass = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['pti']['view']['viewResolver'];
-        $this->viewResolver = GeneralUtility::makeInstance($viewResolverClass);
     }
 
     /**
@@ -47,10 +42,6 @@ class PtiContentObject extends AbstractContentObject
         $templateName = $this->getTemplateName();
         $view = $this->viewResolver->getViewForContentObject($data, $templateName);
         $view->setVariables($data);
-
-        if ($view instanceof TemplateBasedViewInterface) {
-            $view->setTemplate($templateName);
-        }
 
         $this->lastChanged();
 

@@ -163,7 +163,16 @@ class CompoundProcessor implements PtiDataProcessor
     protected function renderContentObject($nodeValue, array $contentObjectConfiguration, string $table, array $data)
     {
         $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+
+        // Force content object renderer to render json
         $data['_pti_force_view'] = 'json';
+        if (
+            isset($contentObjectConfiguration['20'])
+            && $contentObjectConfiguration['20'] === 'EXTBASEPLUGIN'
+        ) {
+            $contentObjectConfiguration['20.']['format'] = 'json';
+        }
+
         $contentObjectRenderer->start($data, $table);
         $contentObjectResult = $contentObjectRenderer->cObjGetSingle(
             $nodeValue,

@@ -38,9 +38,7 @@ abstract class ExtbaseViewAdapter extends AbstractView implements ViewAdapterCon
      */
     public function render()
     {
-        $viewResolverClass = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['pti']['view']['viewResolver'];
-        /** @var ViewResolver $viewResolver */
-        $viewResolver = GeneralUtility::makeInstance($viewResolverClass);
+        $viewResolver = GeneralUtility::makeInstance(ViewResolverInterface::class);
 
         $view = $viewResolver->getViewForExtbaseAction(
             $this->viewAdapterContext->getControllerObjectName(),
