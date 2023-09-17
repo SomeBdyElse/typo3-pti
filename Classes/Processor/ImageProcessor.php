@@ -39,8 +39,8 @@ class ImageProcessor
 
         $assetOptions = [
             'uri' => [
-                'default' => $this->addAbsRefPrefix($defaultImageResource[3]),
-                'retina2x' => $this->addAbsRefPrefix($retinaImageResource)
+                'default' => $defaultImageResource[3],
+                'retina2x' => $retinaImageResource,
             ],
             'width' => $defaultImageResource[0],
             'height' => $defaultImageResource[1],
@@ -70,17 +70,6 @@ class ImageProcessor
         }
 
         return $image[3];
-    }
-
-    /**
-     * Prepend the absRefPrefix from typoscript configuration to the image file path
-     *
-     * @param string $uri
-     * @return string
-     */
-    protected function addAbsRefPrefix(string $uri): string
-    {
-        return $this->tsfe->absRefPrefix . $uri;
     }
 
     /**
