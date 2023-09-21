@@ -23,6 +23,9 @@ services:
     autowire: false
   PrototypeIntegration\PrototypeIntegration\View\Event\ExtbaseViewAdapterVariablesConvertedEvent:
     autowire: false
+
+  PrototypeIntegration\PrototypeIntegration\View\ViewAdapter:
+    autowire: false
   PrototypeIntegration\PrototypeIntegration\View\ExtbaseViewAdapterContext:
     autowire: false
 
