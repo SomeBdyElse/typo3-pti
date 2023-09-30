@@ -29,7 +29,7 @@ class MenuProcessor implements PtiDataProcessor
     public function process(array $data, array $configuration): ?array
     {
         $defaultConfiguration = [
-            'includePageData' => false
+            'includePageData' => false,
         ];
         $configuration = array_replace($defaultConfiguration, $configuration);
 

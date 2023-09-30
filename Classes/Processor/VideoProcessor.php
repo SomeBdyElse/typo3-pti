@@ -35,7 +35,7 @@ class VideoProcessor
         $videoData = [
             'default' => [
                 'src' => $src,
-                'type' => $file->getMimeType()
+                'type' => $file->getMimeType(),
             ],
             'metaData' => $this->fileMetaDataProcessor->processFile(($file)),
         ];

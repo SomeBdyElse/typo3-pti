@@ -84,7 +84,7 @@ class LanguageMenuProcessor
             'titleShort' => $menuData['navigationTitle'],
             'link' => $link,
             'current' => (bool)$menuData['active'],
-            'sortValue' => (int)$menuData['active']
+            'sortValue' => (int)$menuData['active'],
         ];
 
         return $languageData;

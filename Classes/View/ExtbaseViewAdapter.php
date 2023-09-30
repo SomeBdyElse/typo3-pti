@@ -6,11 +6,14 @@ namespace PrototypeIntegration\PrototypeIntegration\View;
 
 use PrototypeIntegration\PrototypeIntegration\View\Event\ExtbaseViewAdapterVariablesConvertedEvent;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Core\Utility\Exception\NotImplementedMethodException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
-use TYPO3\CMS\Extbase\Mvc\View\AbstractView;
+use TYPO3Fluid\Fluid\View\AbstractView;
 
-abstract class ExtbaseViewAdapter extends AbstractView
+/**
+ * @deprecated use \PrototypeIntegration\PrototypeIntegration\View\ViewAdapter instead
+ */
+abstract class ExtbaseViewAdapter extends AbstractView implements ExtbaseViewAdapterContextAware
 {
     protected ?array $settings;
 
@@ -18,9 +21,16 @@ abstract class ExtbaseViewAdapter extends AbstractView
 
     protected EventDispatcher $eventDispatcher;
 
+    protected ExtbaseViewAdapterContext $viewAdapterContext;
+
     public function injectDispatcher(EventDispatcher $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
+    }
+
+    public function setViewAdapterContext(ExtbaseViewAdapterContext $viewAdapterContext): void
+    {
+        $this->viewAdapterContext = $viewAdapterContext;
     }
 
     /**
@@ -31,22 +41,22 @@ abstract class ExtbaseViewAdapter extends AbstractView
      */
     public function render()
     {
-        $viewResolverClass = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['pti']['view']['viewResolver'];
-        /** @var ViewResolver $viewResolver */
-        $viewResolver = GeneralUtility::makeInstance($viewResolverClass);
+        $viewResolver = GeneralUtility::makeInstance(ViewResolverInterface::class);
 
         $view = $viewResolver->getViewForExtbaseAction(
-            $this->controllerContext,
+            $this->viewAdapterContext->getControllerObjectName(),
+            $this->viewAdapterContext->getActionName(),
+            $this->viewAdapterContext->getFormat(),
             $this->getTemplate()
         );
 
-        if ($view instanceof TemplateBasedView) {
+        if ($view instanceof TemplateBasedViewInterface) {
             $view->setTemplate($this->getTemplate());
         }
 
         $variables = $this->convertVariables($this->variables);
         $variables = $this->eventDispatcher->dispatch(new ExtbaseViewAdapterVariablesConvertedEvent($variables))->getVariables();
-        $view->assignMultiple($variables);
+        $view->setVariables($variables);
 
         return $view->render();
     }
@@ -56,24 +66,23 @@ abstract class ExtbaseViewAdapter extends AbstractView
         return $variables;
     }
 
-    public function setControllerContext(ControllerContext $controllerContext)
-    {
-        parent::setControllerContext($controllerContext);
-    }
-
-    /**
-     * @return string
-     */
     public function getTemplate(): string
     {
         return $this->template;
     }
 
-    /**
-     * @param array $settings
-     */
     public function injectSettings(?array $settings): void
     {
         $this->settings = $settings;
+    }
+
+    public function renderSection($sectionName, array $variables = [], $ignoreUnknown = false)
+    {
+        throw new NotImplementedMethodException('', 1691402012205);
+    }
+
+    public function renderPartial($partialName, $sectionName, array $variables, $ignoreUnknown = false)
+    {
+        throw new NotImplementedMethodException('', 1691402017852);
     }
 }

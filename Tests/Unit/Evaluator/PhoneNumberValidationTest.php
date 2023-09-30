@@ -2,8 +2,8 @@
 
 namespace PrototypeIntegration\PrototypeIntegration\Tests\Unit\Evaluator;
 
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use PrototypeIntegration\PrototypeIntegration\Evaluator\PhoneNumberValidation;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class PhoneNumberValidationTest extends UnitTestCase
 {
@@ -16,7 +16,7 @@ class PhoneNumberValidationTest extends UnitTestCase
     {
         parent::setUp();
         $this->validator = $this->getMockBuilder(PhoneNumberValidation::class)
-            ->setMethods(['addFlashMessage', 'translate'])
+            ->onlyMethods(['addFlashMessage', 'translate'])
             ->getMock();
     }
 
@@ -40,14 +40,14 @@ class PhoneNumberValidationTest extends UnitTestCase
         self::assertEquals($expected, $this->validator->evaluateFieldValue($inputString, '', $isSet));
     }
 
-    public function telephoneIsProperlyEvaluatedDataProvider(): array
+    public static function telephoneIsProperlyEvaluatedDataProvider(): array
     {
         return [
             'empty string' => ['', ''],
             'with preceding plus' => ['+43 699 12 54 12 1', '+43 699 12 54 12 1'],
             'with preceding 00' => ['0043 699 12 54 12 1', '+43 699 12 54 12 1'],
             'national format return same' => ['0699 12 54 12 1', '0699 12 54 12 1'],
-            'with non numeric characters' => ['+43 699 12 54 12 1 -D:4', '+43 699 12 54 12 1 4']
+            'with non numeric characters' => ['+43 699 12 54 12 1 -D:4', '+43 699 12 54 12 1 4'],
         ];
     }
 }

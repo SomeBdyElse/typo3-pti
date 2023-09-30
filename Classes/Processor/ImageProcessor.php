@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use UnexpectedValueException;
@@ -37,17 +38,17 @@ class ImageProcessor
                 1_678_088_092
             );
         }
-
-        $retinaImageResource = self::renderRetinaImage($file, $conf);
+        $defaultImagePublicUrl = PathUtility::stripPathSitePrefix($defaultImageResource[3]);
+        $retinaImagePublicUrl = self::renderRetinaImage($file, $conf);
 
         $assetOptions = [
             'uri' => [
-                'default' => $this->addAbsRefPrefix($defaultImageResource[3]),
-                'retina2x' => $this->addAbsRefPrefix($retinaImageResource)
+                'default' => $defaultImagePublicUrl,
+                'retina2x' => $retinaImagePublicUrl,
             ],
             'width' => $defaultImageResource[0],
             'height' => $defaultImageResource[1],
-            'ratio' => $defaultImageResource[0] / $defaultImageResource[1]
+            'ratio' => $defaultImageResource[0] / $defaultImageResource[1],
         ];
 
         self::clearAssetOptions($assetOptions, $conf);
@@ -70,18 +71,7 @@ class ImageProcessor
             );
         }
 
-        return $image[3];
-    }
-
-    /**
-     * Prepend the absRefPrefix from typoscript configuration to the image file path
-     *
-     * @param string $uri
-     * @return string
-     */
-    protected function addAbsRefPrefix(string $uri): string
-    {
-        return $this->tsfe->absRefPrefix . $uri;
+        return PathUtility::stripPathSitePrefix($image[3]);
     }
 
     /**

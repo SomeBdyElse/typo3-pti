@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PreviewImageProcessor
 {
-    const FILE_PREVIEW_IMAGE_PROPERTY = 'preview_image';
+    public const FILE_PREVIEW_IMAGE_PROPERTY = 'preview_image';
 
     protected MetaDataRepository $metaDataRepository;
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
+use TYPO3\CMS\Core\LinkHandling\TypoLinkCodecService;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Service\TypoLinkCodecService;
 
 class TypoLinkStringProcessor
 {
@@ -27,7 +27,7 @@ class TypoLinkStringProcessor
         $uri = $this->contentObject->typoLink_URL(
             [
                 'parameter' => $typoLinkParts['url'],
-                'additionalParams' => $typoLinkParts['additionalParams']
+                'additionalParams' => $typoLinkParts['additionalParams'],
             ]
         );
 
@@ -40,8 +40,8 @@ class TypoLinkStringProcessor
                 'uri' => $uri,
                 'target' => $typoLinkParts['target'],
                 'class' => $typoLinkParts['class'],
-                'title' => $typoLinkParts['title']
-            ]
+                'title' => $typoLinkParts['title'],
+            ],
         ];
     }
 }

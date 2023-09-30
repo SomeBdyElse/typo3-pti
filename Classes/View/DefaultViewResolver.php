@@ -6,10 +6,8 @@ namespace PrototypeIntegration\PrototypeIntegration\View;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
-class DefaultViewResolver implements ViewResolver
+class DefaultViewResolver implements ViewResolverInterface
 {
     protected ExtensionConfiguration $extensionConfiguration;
 
@@ -18,21 +16,42 @@ class DefaultViewResolver implements ViewResolver
         $this->extensionConfiguration = $extensionConfiguration;
     }
 
-    public function getViewForContentObject(?array $dbRow = [], ?string $template = ''): ViewInterface
-    {
-        return $this->getDefaultView();
+    public function getViewForContentObject(
+        ?array $dbRow = [],
+        ?string $template = ''
+    ): PtiViewInterface {
+        if (isset($template) && $template === 'json') {
+            return $this->getJsonView();
+        }
+        return $this->getDefaultView($template);
     }
 
-    public function getViewForExtbaseAction(ControllerContext $controllerContext, ?string $template): ViewInterface
-    {
-        return $this->getDefaultView();
+    public function getViewForExtbaseAction(
+        string $controllerObjectName,
+        string $actionName,
+        string $format,
+        ?string $template
+    ): PtiViewInterface {
+        if (isset($format) && $format === 'json') {
+            return $this->getJsonView();
+        }
+        return $this->getDefaultView($template);
     }
 
-    protected function getDefaultView(): ViewInterface
+    protected function getDefaultView(?string $template): PtiViewInterface
     {
         $class = $this->extensionConfiguration->get('pti', 'defaultView');
-        /** @var ViewInterface $view */
         $view = GeneralUtility::makeInstance($class);
+
+        if ($view instanceof TemplateBasedViewInterface) {
+            $view->setTemplate($template);
+        }
+
         return $view;
+    }
+
+    protected function getJsonView()
+    {
+        return GeneralUtility::makeInstance(JsonView::class);
     }
 }

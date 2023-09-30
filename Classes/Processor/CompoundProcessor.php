@@ -134,6 +134,7 @@ class CompoundProcessor implements PtiDataProcessor
         /** @var ContentObjectRenderer $contentObjectRenderer */
         $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $contentObjectRenderer->start($record, $table);
+        $this->lastChanged($contentObjectRenderer, $table, $record);
 
         $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
         $plainConf = $typoScriptService->convertTypoScriptArrayToPlainArray($conf);
@@ -162,12 +163,22 @@ class CompoundProcessor implements PtiDataProcessor
     protected function renderContentObject($nodeValue, array $contentObjectConfiguration, string $table, array $data)
     {
         $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+
+        // Force content object renderer to render json
         $data['_pti_force_view'] = 'json';
+        if (
+            isset($contentObjectConfiguration['20'])
+            && $contentObjectConfiguration['20'] === 'EXTBASEPLUGIN'
+        ) {
+            $contentObjectConfiguration['20.']['format'] = 'json';
+        }
+
         $contentObjectRenderer->start($data, $table);
         $contentObjectResult = $contentObjectRenderer->cObjGetSingle(
             $nodeValue,
             $contentObjectConfiguration
         );
+        $this->lastChanged($contentObjectRenderer, $table, $data);
 
         $data = json_decode($contentObjectResult, true);
         if ($data !== null) {
@@ -175,5 +186,13 @@ class CompoundProcessor implements PtiDataProcessor
         }
 
         return $contentObjectResult;
+    }
+
+    protected function lastChanged(ContentObjectRenderer $contentObjectRenderer, string $table, array $data)
+    {
+        $timestampeColumn = $GLOBALS['TCA'][$table]['ctrl']['tstamp'] ?? 'tstamp';
+        if (isset($data[$timestampeColumn])) {
+            $contentObjectRenderer->lastChanged($data[$timestampeColumn]);
+        }
     }
 }
