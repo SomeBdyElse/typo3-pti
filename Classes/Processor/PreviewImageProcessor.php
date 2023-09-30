@@ -35,7 +35,9 @@ class PreviewImageProcessor
 
     public function getPreviewImage(FileInterface $file, array $configuration = []): ?FileInterface
     {
-        if ($posterImageProperty = $file->getProperty(self::FILE_PREVIEW_IMAGE_PROPERTY)) {
+        if ($file->hasProperty(self::FILE_PREVIEW_IMAGE_PROPERTY)
+            && !empty($file->getProperty(self::FILE_PREVIEW_IMAGE_PROPERTY))
+        ) {
             $originalFile = $file instanceof FileReference ? $file->getOriginalFile() : $file;
             $metaData = $this->metaDataRepository->findByFile($originalFile);
             $metaDataUid = $metaData['uid'];
