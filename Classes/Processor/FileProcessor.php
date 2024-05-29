@@ -118,7 +118,7 @@ class FileProcessor
      */
     protected function getDownloadItem(FileReference $item): array
     {
-        $fileFormatConfiguration = $this->configuration['formatSize'] ?: [];
+        $fileFormatConfiguration = $this->configuration['formatSize'] ?? [];
         $description = $this->getMetaDataDescription($item);
 
         $downloadItem = [
