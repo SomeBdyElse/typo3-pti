@@ -22,7 +22,7 @@ class ProcessorRunner
     public function processData(ContentObjectRenderer $contentObjectRenderer, array $conf, ?string $table): ?array
     {
         $data = $contentObjectRenderer->data;
-        foreach ($conf['dataProcessors'] ?: [] as $dataProcessorConfiguration) {
+        foreach ($conf['dataProcessors'] ?? [] as $dataProcessorConfiguration) {
             // Get classname
             $dataProcessorClassName = null;
             if (is_string($dataProcessorConfiguration)) {
