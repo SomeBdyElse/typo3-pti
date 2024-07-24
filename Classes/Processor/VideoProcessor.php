@@ -12,12 +12,10 @@ use TYPO3\CMS\Core\Resource\OnlineMedia\Helpers\OnlineMediaHelperRegistry;
 
 class VideoProcessor
 {
-    protected FileMetadataProcessor $fileMetaDataProcessor;
-
     public function __construct(
-        FileMetadataProcessor $fileMetaDataProcessor
+        protected FileMetadataProcessor $fileMetaDataProcessor,
+        protected OnlineMediaHelperRegistry $onlineMediaHelperRegistry
     ) {
-        $this->fileMetaDataProcessor = $fileMetaDataProcessor;
     }
 
     /**
@@ -122,7 +120,7 @@ class VideoProcessor
             $file = $file->getOriginalFile();
         }
         if ($file instanceof File) {
-            $mediaHelper = OnlineMediaHelperRegistry::getInstance()->getOnlineMediaHelper($file);
+            $mediaHelper = $this->onlineMediaHelperRegistry->getOnlineMediaHelper($file);
             if ($mediaHelper) {
                 return $mediaHelper;
             }
