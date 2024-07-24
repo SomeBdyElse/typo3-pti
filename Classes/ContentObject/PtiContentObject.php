@@ -31,7 +31,7 @@ class PtiContentObject extends AbstractContentObject
         $this->conf = $this->typoScriptService->convertTypoScriptArrayToPlainArray($conf);
 
         if (isset($this->conf['templateName'])) {
-            $this->templateName = $this->conf['templateName'];
+            $this->templateName = $this->cObj->stdWrapValue('templateName', $conf ?? []);
         }
 
         $data = $this->processorRunner->processData($this->cObj, $this->conf, $this->cObj->getCurrentTable());
