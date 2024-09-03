@@ -34,7 +34,16 @@ class CompoundProcessor implements PtiDataProcessor
 
     public function process(array $data, array $configuration): ?array
     {
+        $processorConfiguration = [];
+        foreach (['_overrideUncachedFormat'] as $processorConfigurationKey) {
+            if (isset($configuration[$processorConfigurationKey])) {
+                $processorConfiguration[$processorConfigurationKey] = $configuration[$processorConfigurationKey];
+                unset($configuration[$processorConfigurationKey]);
+            }
+        }
+
         $contentData = $this->gatherContentData(
+            $processorConfiguration,
             $configuration,
             $data,
             $this->contentObjectRenderer->getCurrentTable()
@@ -47,8 +56,12 @@ class CompoundProcessor implements PtiDataProcessor
      * @param array $data
      * @return array
      */
-    protected function gatherContentData(array $configuration, array $data, string $table): array
-    {
+    protected function gatherContentData(
+        array $processorConfiguration,
+        array $configuration,
+        array $data,
+        string $table
+    ): array {
         $contentData = [];
         foreach ($configuration as $nodeKey => $node) {
             if (is_array($node)) {
@@ -56,14 +69,14 @@ class CompoundProcessor implements PtiDataProcessor
                 switch ($nodeValue) {
                     case null:
                         if (is_array($node)) {
-                            $subContentData = $this->gatherContentData($node, $data, $table);
+                            $subContentData = $this->gatherContentData($processorConfiguration, $node, $data, $table);
                             if (!empty($subContentData)) {
                                 $contentData[$nodeKey] = $subContentData;
                             }
                         }
                         break;
                     case 'PTI_CONTENT':
-                        $contentData[$nodeKey] = $this->renderContentSection($node);
+                        $contentData[$nodeKey] = $this->renderContentSection($processorConfiguration, $node);
                         break;
                     case 'PTI':
                         $contentData[$nodeKey] = $this->processPtiContentObjectData($node, $data, $table);
@@ -73,6 +86,7 @@ class CompoundProcessor implements PtiDataProcessor
                             $node
                         );
                         $contentObjectResult = $this->renderContentObject(
+                            $processorConfiguration,
                             $nodeValue,
                             $contentObjectConfiguration,
                             $table,
@@ -90,11 +104,7 @@ class CompoundProcessor implements PtiDataProcessor
         return $contentData;
     }
 
-    /**
-     * @param $configuration
-     * @return array
-     */
-    protected function renderContentSection($configuration): array
+    protected function renderContentSection(array $processorConfiguration, $configuration): array
     {
         $configuration = $this->typoScriptService->convertPlainArrayToTypoScriptArray($configuration);
         $table = $configuration['table'];
@@ -111,13 +121,14 @@ class CompoundProcessor implements PtiDataProcessor
 
             switch ($value) {
                 case 'PTI':
-                    $contentObjectResult = $this->processPtiContentObjectData($property, $record, $table);
+                    $contentObjectResult = $this->processPtiContentObjectData($processorConfiguration, $property, $record, $table);
                     if (isset($contentObjectResult)) {
                         $contentData[] = $contentObjectResult;
                     }
                     break;
                 default:
                     $contentResponse = $this->renderContentObject(
+                        $processorConfiguration,
                         $value,
                         $property,
                         $table,
@@ -160,19 +171,17 @@ class CompoundProcessor implements PtiDataProcessor
      * @param array $data
      * @return mixed
      */
-    protected function renderContentObject($nodeValue, array $contentObjectConfiguration, string $table, array $data)
+    protected function renderContentObject(array $processorConfiguration, $nodeValue, array $contentObjectConfiguration, string $table, array $data)
     {
         $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
-        // Force content object renderer to render json
-        $data['_pti_force_view'] = 'json';
-        if (
-            isset($contentObjectConfiguration['20'])
-            && $contentObjectConfiguration['20'] === 'EXTBASEPLUGIN'
-        ) {
-            $contentObjectConfiguration['20.']['format'] = 'json';
-        }
+        // Force content object renderer to render json, so we can parse the result
+        $data['_pti_format'] = 'json';
 
+        // For uncached rendering, the output of the single content object needs to match the global output format
+        if (isset($processorConfiguration['_overrideUncachedFormat'])) {
+            $data['_pti_format_uncached'] = $processorConfiguration['_overrideUncachedFormat'];
+        }
         $contentObjectRenderer->start($data, $table);
         $contentObjectResult = $contentObjectRenderer->cObjGetSingle(
             $nodeValue,

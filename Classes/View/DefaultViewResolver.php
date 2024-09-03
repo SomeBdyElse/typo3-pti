@@ -6,6 +6,8 @@ namespace PrototypeIntegration\PrototypeIntegration\View;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class DefaultViewResolver implements ViewResolverInterface
 {
@@ -32,6 +34,27 @@ class DefaultViewResolver implements ViewResolverInterface
         string $format,
         ?string $template
     ): PtiViewInterface {
+        // Allow the CompoundProcessor to force json output
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $contentObject = $configurationManager->getContentObject();
+
+        $ptiForceView = $contentObject?->data['_pti_format'] ?? null;
+        if (
+            // USER_INT objects have to be rendered with their real template on the second pass, when replacing the USER_INT string
+            $contentObject->getUserObjectType() === ContentObjectRenderer::OBJECTTYPE_USER
+            && isset($ptiForceView)
+        ) {
+            $format = $ptiForceView;
+        }
+
+        $ptiForceViewUncached = $contentObject?->data['_pti_format_uncached'] ?? null;
+        if (
+            $contentObject->getUserObjectType() === ContentObjectRenderer::OBJECTTYPE_USER_INT
+            && isset($ptiForceViewUncached)
+        ) {
+            $format = $ptiForceViewUncached;
+        }
+
         if (isset($format) && $format === 'json') {
             return $this->getJsonView();
         }
