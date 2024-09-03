@@ -26,6 +26,8 @@ services:
 
   PrototypeIntegration\PrototypeIntegration\View\ViewAdapter:
     autowire: false
+  PrototypeIntegration\PrototypeIntegration\View\TemplateViewAdapter:
+    autowire: false
   PrototypeIntegration\PrototypeIntegration\View\ExtbaseViewAdapterContext:
     autowire: false
 
