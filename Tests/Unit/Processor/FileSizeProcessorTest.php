@@ -38,48 +38,48 @@ class FileSizeProcessorTest extends UnitTestCase
         return [
             [
                 'fileSize' => 'invalid',
-                [],
+                'formatSettings' => [],
                 'expected' => '0 B',
             ],
             [
                 'fileSize' => '',
-                [],
+                'formatSettings' => [],
                 'expected' => '0 B',
             ],
             [
                 'fileSize' => [],
-                [],
+                'formatSettings' => [],
                 'expected' => '0 B',
             ],
             [
                 'fileSize' => 123,
-                [],
+                'formatSettings' => [],
                 'expected' => '123 B',
             ],
             [
                 'fileSize' => '43008',
-                [
+                'formatSettings' => [
                     'decimals' => 1,
                 ],
                 'expected' => '42.0 KB',
             ],
             [
                 'fileSize' => '1024',
-                [
+                'formatSettings' => [
                     'decimals' => 1,
                 ],
                 'expected' => '1.0 KB',
             ],
             [
                 'fileSize' => '1022',
-                [
+                'formatSettings' => [
                     'decimals' => 2,
                 ],
                 'expected' => '1022.00 B',
             ],
             [
                 'fileSize' => '1022',
-                [
+                'formatSettings' => [
                     'decimals' => 2,
                     'thousandsSeparator' => ',',
                 ],
@@ -87,7 +87,7 @@ class FileSizeProcessorTest extends UnitTestCase
             ],
             [
                 'fileSize' => 1073741823,
-                [
+                'formatSettings' => [
                     'decimals' => 1,
                     'decimalSeparator' => ',',
                     'thousandsSeparator' => '.',
@@ -96,14 +96,14 @@ class FileSizeProcessorTest extends UnitTestCase
             ],
             [
                 'fileSize' => pow(1024, 5),
-                [
+                'formatSettings' => [
                     'decimals' => 1,
                 ],
                 'expected' => '1.0 PB',
             ],
             [
                 'fileSize' => pow(1024, 8),
-                [
+                'formatSettings' => [
                     'decimals' => 1,
                 ],
                 'expected' => '1.0 YB',
