@@ -121,7 +121,7 @@ class CompoundProcessor implements PtiDataProcessor
 
             switch ($value) {
                 case 'PTI':
-                    $contentObjectResult = $this->processPtiContentObjectData($processorConfiguration, $property, $record, $table);
+                    $contentObjectResult = $this->processPtiContentObjectData($property, $record, $table);
                     if (isset($contentObjectResult)) {
                         $contentData[] = $contentObjectResult;
                     }
