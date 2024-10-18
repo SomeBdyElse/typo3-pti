@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace PrototypeIntegration\PrototypeIntegration\View;
 
 use PrototypeIntegration\PrototypeIntegration\Processor\PtiDataProcessor;
-use TYPO3\CMS\Core\Utility\Exception\NotImplementedMethodException;
-use TYPO3Fluid\Fluid\View\AbstractView;
-use TYPO3Fluid\Fluid\View\ViewInterface;
+use TYPO3\CMS\Core\View\ViewInterface;
 
-class ViewAdapter extends AbstractView implements ViewInterface
+class ViewAdapter implements ViewInterface
 {
     protected ?array $settings;
+
+    protected array $variables = [];
 
     /**
      * @param PtiDataProcessor[] $dataProcessors
@@ -22,10 +22,7 @@ class ViewAdapter extends AbstractView implements ViewInterface
     ) {
     }
 
-    /**
-     * @return string The rendered view
-     */
-    public function render()
+    public function render(string $templateFileName = ''): string
     {
         $variables = $this->variables;
         foreach ($this->dataProcessors as $dataProcessor) {
@@ -39,13 +36,15 @@ class ViewAdapter extends AbstractView implements ViewInterface
         return $this->view->render();
     }
 
-    public function renderSection($sectionName, array $variables = [], $ignoreUnknown = false)
+    public function assign(string $key, mixed $value): self
     {
-        throw new NotImplementedMethodException('', 1691406217099);
+        $this->variables[$key] = $value;
+        return $this;
     }
 
-    public function renderPartial($partialName, $sectionName, array $variables, $ignoreUnknown = false)
+    public function assignMultiple(array $values): self
     {
-        throw new NotImplementedMethodException('', 1691406221493);
+        $this->variables = array_replace_recursive($this->variables, $values);
+        return $this;
     }
 }

@@ -6,7 +6,7 @@ namespace PrototypeIntegration\PrototypeIntegration\View;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class DefaultViewResolver implements ViewResolverInterface
@@ -29,14 +29,11 @@ class DefaultViewResolver implements ViewResolverInterface
     }
 
     public function getViewForExtbaseAction(
-        string $controllerObjectName,
-        string $actionName,
-        string $format,
-        ?string $template
+        RequestInterface $extbaseRequest,
+        ?string $template = null,
     ): PtiViewInterface {
         // Allow the CompoundProcessor to force json output
-        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-        $contentObject = $configurationManager->getContentObject();
+        $contentObject = $extbaseRequest->getAttribute('currentContentObject');
 
         $ptiForceView = $contentObject?->data['_pti_format'] ?? null;
         if (
@@ -58,6 +55,7 @@ class DefaultViewResolver implements ViewResolverInterface
         if (isset($format) && $format === 'json') {
             return $this->getJsonView();
         }
+
         return $this->getDefaultView($template);
     }
 
