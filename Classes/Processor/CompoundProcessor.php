@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use PrototypeIntegration\PrototypeIntegration\DataProcessing\ProcessorRunner;
-use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -15,16 +14,9 @@ class CompoundProcessor implements PtiDataProcessor
 {
     protected ContentObjectRenderer $contentObjectRenderer;
 
-    protected TypoScriptService $typoScriptService;
-
-    protected TypoScriptParser $typoScriptParser;
-
     public function __construct(
-        TypoScriptService $typoScriptService,
-        TypoScriptParser $typoScriptParser
+        protected TypoScriptService $typoScriptService,
     ) {
-        $this->typoScriptService = $typoScriptService;
-        $this->typoScriptParser = $typoScriptParser;
     }
 
     public function injectContentObjectRenderer(ContentObjectRenderer $contentObjectRenderer)
@@ -113,11 +105,9 @@ class CompoundProcessor implements PtiDataProcessor
         $records = $this->contentObjectRenderer->getRecords($table, $configuration['select.']);
         foreach ($records as $record) {
             $cType = $record['CType'];
-
-            [$value, $property] = $this->typoScriptParser->getVal(
-                $table . '.' . $cType,
-                $this->getTypoScriptFrontendController()->tmpl->setup
-            );
+            $typoScript = $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')->getSetupArray();
+            $value = $typoScript[$table . '.'][$cType];
+            $property = $typoScript[$table . '.'][$cType . '.'];
 
             switch ($value) {
                 case 'PTI':
