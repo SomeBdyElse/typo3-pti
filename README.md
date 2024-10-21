@@ -150,8 +150,20 @@ page.10 {
 
 ## Extbase integration
 
-To process data for an extbase action, create a processor and add the `AsExtbaseProcessor` attribute to the class. You can optionally define a template. PTI will inject an adapter as extbase view to run the processors and pass the rendering to the template engine.
+To integrate extbase actions with pti, override the TYPO3 `ViewFactory` with the pti implementation. This allows pti to inject custom views into extbase controllers. Add the following code to your `EXT:sitepackage/Configuration/Services.yaml`:
 
+```yaml
+# EXT:pti_demo/Configuration/Services.yaml
+services:
+  TYPO3\CMS\Core\View\ViewFactoryInterface:
+    class: 'PrototypeIntegration\PrototypeIntegration\View\ViewFactory'
+    arguments:
+      $defaultViewFactory: '@TYPO3\CMS\Fluid\View\FluidViewFactory'
+```
+
+To render the output of an extbase action with a custom processor and template, create a `PtiDataProcessor` and add the `AsExtbaseProcessor` attribute to the class. You can optionally define a template. PTI will inject an adapter as extbase view to run the processors and pass the rendering to the template engine with the given template.
+
+Here is an example for a News List integration:
 ```php
 <?php
 
