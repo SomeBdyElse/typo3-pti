@@ -3,6 +3,7 @@
 namespace PrototypeIntegration\PrototypeIntegration\Tests\Unit\Processor;
 
 use PrototypeIntegration\PrototypeIntegration\Processor\TypoLinkStringProcessor;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\LinkHandling\TypoLinkCodecService;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -20,7 +21,13 @@ class TypoLinkStringProcessorTest extends UnitTestCase
     {
         parent::setUp();
 
-        $typoLinkCodecService = new TypoLinkCodecService();
+        $eventDispatcherMock = $this->createMock(EventDispatcher::class);
+        $eventDispatcherMock
+            ->method('dispatch')
+            ->willReturnArgument(0)
+        ;
+
+        $typoLinkCodecService = new TypoLinkCodecService($eventDispatcherMock);
 
         $contentObjectRendererMock = $this->createMock(ContentObjectRenderer::class);
         $contentObjectRendererMock

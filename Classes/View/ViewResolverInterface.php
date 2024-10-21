@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\View;
 
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
+
 interface ViewResolverInterface
 {
     public function getViewForContentObject(
@@ -12,9 +14,7 @@ interface ViewResolverInterface
     ): PtiViewInterface;
 
     public function getViewForExtbaseAction(
-        string $controllerObjectName,
-        string $actionName,
-        string $format,
-        ?string $template
+        RequestInterface $extbaseRequest,
+        ?string $template = null,
     ): PtiViewInterface;
 }
