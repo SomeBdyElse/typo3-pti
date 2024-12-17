@@ -13,6 +13,7 @@ class FileMetadataProcessor
         $properties = [
             'title' => 'title',
             'description' => 'description',
+            'caption' => 'caption',
             'copyright' => 'copyright',
             'link' => 'link',
             'alternative' => 'alternative',
@@ -29,6 +30,10 @@ class FileMetadataProcessor
                     $metaData[$key] = $value;
                 }
             }
+        }
+
+        if (isset($metaData['caption']) && !isset($metaData['description'])) {
+            $metaData['description'] = $metaData['caption'];
         }
 
         return $metaData;
