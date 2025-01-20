@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use PrototypeIntegration\PrototypeIntegration\Formatter\StringFormatter;
-use TYPO3\CMS\Core\Resource\FileReference;
+use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -95,13 +95,36 @@ class FileProcessor
      */
     public function renderFileCollection(string $table, string $fieldName, array $row, array $configuration = []): array
     {
-        $this->configuration = $configuration;
-        $this->setMetaDataConfiguration();
+        $this->initialize($configuration);
 
         $fileCollector = GeneralUtility::makeInstance(FileCollector::class);
         $fileCollector->addFilesFromRelation($table, $fieldName, $row);
         $files = $fileCollector->getFiles();
 
+        return $this->processFileCollection($files);
+    }
+
+    /**
+     * @param array $collection The referencing with multiple uid of file collections
+     */
+    public function renderFilesFromCollection(array $collection, array $configuration = []): array
+    {
+        $this->initialize($configuration);
+        $fileCollector = GeneralUtility::makeInstance(FileCollector::class);
+        $fileCollector->addFilesFromFileCollections($collection);
+        $files = $fileCollector->getFiles();
+
+        return $this->processFileCollection($files);
+    }
+
+    protected function initialize(array $configuration): void
+    {
+        $this->configuration = $configuration;
+        $this->setMetaDataConfiguration();
+    }
+
+    protected function processFileCollection(array $files): array
+    {
         $processedFiles = [];
         foreach ($files as $file) {
             $processedFiles[] = $this->getDownloadItem($file);
@@ -113,10 +136,10 @@ class FileProcessor
     /**
      * Retrieve the download item from the db.
      *
-     * @param FileReference $item
+     * @param FileInterface $item
      * @return array
      */
-    protected function getDownloadItem(FileReference $item): array
+    protected function getDownloadItem(FileInterface $item): array
     {
         $fileFormatConfiguration = $this->configuration['formatSize'] ?? [];
         $description = $this->getMetaDataDescription($item);
@@ -125,7 +148,7 @@ class FileProcessor
             'link' => [
                 'metaData' => [
                     'description' => $description,
-                    'name' => $item->getTitle(),
+                    'name' => $this->getMetaDataTitle($item),
                     'extension' => $item->getExtension(),
                     'size' => $this->fileSizeProcessor->formatFileSize($item->getSize(), $fileFormatConfiguration),
                 ],
@@ -136,15 +159,7 @@ class FileProcessor
         $linkConfig = $this->typoLinkStringProcessor->processTypoLinkString($linkString) ?: [];
         ArrayUtility::mergeRecursiveWithOverrule($downloadItem['link'], $linkConfig);
 
-        $downloadImage = $this->previewImageProcessor->getPreviewImage($item, $this->configuration);
-        if (isset($downloadImage)) {
-            $downloadItem['image'] = $this->pictureProcessor->renderPicture(
-                $downloadImage,
-                $this->configuration['imageConfig']
-            );
-        }
-
-        return $downloadItem;
+        return $this->getPreviewImage($item, $downloadItem);
     }
 
     /**
@@ -152,10 +167,10 @@ class FileProcessor
      * description-field. It's also possible to use an fallback field, if the defined field is not available
      * or empty.
      *
-     * @param \TYPO3\CMS\Core\Resource\FileReference $item
+     * @param FileInterface $item
      * @return string|null
      */
-    protected function getMetaDataDescription(FileReference $item): ?string
+    protected function getMetaDataDescription(FileInterface $item): ?string
     {
         $description = null;
 
@@ -176,6 +191,33 @@ class FileProcessor
         $description = $this->stringFormatter->formatCrop($description, $this->metaDataConfiguration);
 
         return $description;
+    }
+
+    protected function getMetaDataTitle(FileInterface $item): string
+    {
+        $title = $item->hasProperty('title') ? $item->getProperty('title') : '';
+        if (empty($title)) {
+            $title = $item->getNameWithoutExtension();
+        }
+
+        return $title;
+    }
+
+    protected function getPreviewImage(FileInterface $item, array $downloadItemData): array
+    {
+        if (empty($this->configuration['imageConfig'])) {
+            return $downloadItemData;
+        }
+
+        $downloadImage = $this->previewImageProcessor->getPreviewImage($item, $this->configuration);
+        if ($downloadImage instanceof FileInterface) {
+            $downloadItemData['image'] = $this->pictureProcessor->renderPicture(
+                $downloadImage,
+                $this->configuration['imageConfig']
+            );
+        }
+
+        return $downloadItemData;
     }
 
     protected function setMetaDataConfiguration()
