@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use PrototypeIntegration\PrototypeIntegration\Formatter\StringFormatter;
-use TYPO3\CMS\Core\Resource\FileReference;
+use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -136,10 +136,10 @@ class FileProcessor
     /**
      * Retrieve the download item from the db.
      *
-     * @param FileReference $item
+     * @param FileInterface $item
      * @return array
      */
-    protected function getDownloadItem(FileReference $item): array
+    protected function getDownloadItem(FileInterface $item): array
     {
         $fileFormatConfiguration = $this->configuration['formatSize'] ?? [];
         $description = $this->getMetaDataDescription($item);
@@ -148,7 +148,7 @@ class FileProcessor
             'link' => [
                 'metaData' => [
                     'description' => $description,
-                    'name' => $item->getTitle(),
+                    'name' => $this->getMetaDataTitle($item),
                     'extension' => $item->getExtension(),
                     'size' => $this->fileSizeProcessor->formatFileSize($item->getSize(), $fileFormatConfiguration),
                 ],
@@ -175,10 +175,10 @@ class FileProcessor
      * description-field. It's also possible to use an fallback field, if the defined field is not available
      * or empty.
      *
-     * @param \TYPO3\CMS\Core\Resource\FileReference $item
+     * @param FileInterface $item
      * @return string|null
      */
-    protected function getMetaDataDescription(FileReference $item): ?string
+    protected function getMetaDataDescription(FileInterface $item): ?string
     {
         $description = null;
 
@@ -199,6 +199,16 @@ class FileProcessor
         $description = $this->stringFormatter->formatCrop($description, $this->metaDataConfiguration);
 
         return $description;
+    }
+
+    protected function getMetaDataTitle(FileInterface $item): string
+    {
+        $title = $item->hasProperty('title') ? $item->getProperty('title') : '';
+        if (empty($title)) {
+            $title = $item->getNameWithoutExtension();
+        }
+
+        return $title;
     }
 
     protected function setMetaDataConfiguration()
