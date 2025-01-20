@@ -105,7 +105,7 @@ class FileProcessor
     }
 
     /**
-     * @param array $collection The referencing uid of file collections
+     * @param array $collection The referencing with multiple uid of file collections
      */
     public function renderFilesFromCollection(array $collection, array $configuration = []): array
     {
