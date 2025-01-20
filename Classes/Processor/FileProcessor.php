@@ -95,13 +95,38 @@ class FileProcessor
      */
     public function renderFileCollection(string $table, string $fieldName, array $row, array $configuration = []): array
     {
-        $this->configuration = $configuration;
-        $this->setMetaDataConfiguration();
+        $this->initialize($configuration);
 
         $fileCollector = GeneralUtility::makeInstance(FileCollector::class);
         $fileCollector->addFilesFromRelation($table, $fieldName, $row);
         $files = $fileCollector->getFiles();
 
+        return $this->processFileCollection($files);
+    }
+
+    /**
+     * @param array $collection The referencing uid of file collections
+     * @param array $configuration
+     * @return array
+     */
+    public function renderFilesFromCollection(array $collection, array $configuration = []): array
+    {
+        $this->initialize($configuration);
+        $fileCollector = GeneralUtility::makeInstance(FileCollector::class);
+        $fileCollector->addFilesFromFileCollections($collection);
+        $files = $fileCollector->getFiles();
+
+        return $this->processFileCollection($files);
+    }
+
+    protected function initialize(array $configuration): void
+    {
+        $this->configuration = $configuration;
+        $this->setMetaDataConfiguration();
+    }
+
+    protected function processFileCollection(array $files): array
+    {
         $processedFiles = [];
         foreach ($files as $file) {
             $processedFiles[] = $this->getDownloadItem($file);
