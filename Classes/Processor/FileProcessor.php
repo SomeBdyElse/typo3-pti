@@ -159,15 +159,7 @@ class FileProcessor
         $linkConfig = $this->typoLinkStringProcessor->processTypoLinkString($linkString) ?: [];
         ArrayUtility::mergeRecursiveWithOverrule($downloadItem['link'], $linkConfig);
 
-        $downloadImage = $this->previewImageProcessor->getPreviewImage($item, $this->configuration);
-        if (isset($downloadImage)) {
-            $downloadItem['image'] = $this->pictureProcessor->renderPicture(
-                $downloadImage,
-                $this->configuration['imageConfig']
-            );
-        }
-
-        return $downloadItem;
+        return $this->getPreviewImage($item, $downloadItem);
     }
 
     /**
@@ -209,6 +201,23 @@ class FileProcessor
         }
 
         return $title;
+    }
+
+    protected function getPreviewImage(FileInterface $item, array $downloadItemData): array
+    {
+        if (empty($this->configuration['imageConfig'])) {
+            return $downloadItemData;
+        }
+
+        $downloadImage = $this->previewImageProcessor->getPreviewImage($item, $this->configuration);
+        if ($downloadImage instanceof FileInterface) {
+            $downloadItemData['image'] = $this->pictureProcessor->renderPicture(
+                $downloadImage,
+                $this->configuration['imageConfig']
+            );
+        }
+
+        return $downloadItemData;
     }
 
     protected function setMetaDataConfiguration()
