@@ -208,3 +208,32 @@ class NewsListView implements PtiDataProcessor
     }
 }
 ```
+
+If you need a custom adapter, you can define a custom `adapterClassName` in the `#AsExtbaseProcessor` attribute.
+PTI ships a `FluidViewAdapter` that allows to fake Fluid views.
+
+```php
+<?php
+
+namespace PrototypeIntegration\Demo\Processors\Plugins\Solr;
+
+use ApacheSolrForTypo3\Solr\Controller\SearchController;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use PrototypeIntegration\PrototypeIntegration\DependencyInjection\Attribute\AsExtbaseProcessor;
+use PrototypeIntegration\PrototypeIntegration\Processor\PtiDataProcessor;
+use PrototypeIntegration\PrototypeIntegration\View\FluidViewAdapter;
+
+#[AsExtbaseProcessor(
+    controller: SearchController::class,
+    action: 'results',
+    template: '@content-elements/ce04-search/ce04-search.twig',
+    adapterClassName: FluidViewAdapter::class,
+)]
+class Results implements PtiDataProcessor
+{
+    public function process(array $data, array $configuration): ?array
+    {
+        …
+    }
+}
+```

@@ -14,11 +14,12 @@ return function (ContainerConfigurator $container, ContainerBuilder $containerBu
         static function (ChildDefinition $definition, AsExtbaseProcessor $attribute, \Reflector $reflector): void {
             $definition->addTag(
                 'pti.extbase_processors',
-                [
+                array_filter([
                     'controller' => $attribute->controller,
                     'action' => $attribute->action,
                     'template' => $attribute->template,
-                ]
+                    'adapterClassName' => $attribute->adapterClassName,
+                ], fn(?string $value): bool => isset($value))
             );
         }
     );

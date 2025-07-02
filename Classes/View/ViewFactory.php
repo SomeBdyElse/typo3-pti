@@ -51,7 +51,8 @@ class ViewFactory implements ViewFactoryInterface
                 $override['template'] ?? null,
             );
 
-            return GeneralUtility::makeInstance(ViewAdapter::class, $processors, $view);
+            $adapterClassName = $override['adapterClassName'] ?? ViewAdapter::class;
+            return GeneralUtility::makeInstance($adapterClassName, $processors, $view);
         }
 
         return $this->defaultViewFactory->create($data);

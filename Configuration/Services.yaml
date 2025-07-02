@@ -28,6 +28,8 @@ services:
 
   PrototypeIntegration\PrototypeIntegration\View\ViewAdapter:
     autowire: false
+  PrototypeIntegration\PrototypeIntegration\View\FluidViewAdapter:
+    autowire: false
   PrototypeIntegration\PrototypeIntegration\View\ExtbaseViewAdapterContext:
     autowire: false
 

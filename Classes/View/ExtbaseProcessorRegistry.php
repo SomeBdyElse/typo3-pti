@@ -14,11 +14,16 @@ class ExtbaseProcessorRegistry
         string $action,
         string $processorClassName,
         ?string $template = null,
+        ?string $adapterClassName = null,
     ) {
-        $this->overrides[$controller][$action] = [
+        $override = [
             'processors' => [$processorClassName],
             'template' => $template,
         ];
+        if (isset($adapterClassName)) {
+            $override['adapterClassName'] = $adapterClassName;
+        }
+        $this->overrides[$controller][$action] = $override;
     }
 
     public function getOverrides(): array
