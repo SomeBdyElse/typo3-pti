@@ -52,7 +52,9 @@ class ViewFactory implements ViewFactoryInterface
             );
 
             $adapterClassName = $override['adapterClassName'] ?? ViewAdapter::class;
-            return GeneralUtility::makeInstance($adapterClassName, $processors, $view);
+            $viewAdapter = GeneralUtility::makeInstance($adapterClassName, $processors, $view);
+            $viewAdapter->assign('request', $data->request);
+            return $viewAdapter;
         }
 
         return $this->defaultViewFactory->create($data);
