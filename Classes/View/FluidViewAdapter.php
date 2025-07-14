@@ -10,7 +10,7 @@ readonly class FluidViewAdapter extends \TYPO3\CMS\Fluid\View\FluidViewAdapter
         protected array $dataProcessors,
         protected PtiViewInterface $ptiView,
     ) {
-        parent::__construct(new class extends AbstractTemplateView {});
+        parent::__construct(new class () extends AbstractTemplateView {});
     }
 
     #[\Override]

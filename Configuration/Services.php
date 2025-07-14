@@ -19,7 +19,7 @@ return function (ContainerConfigurator $container, ContainerBuilder $containerBu
                     'action' => $attribute->action,
                     'template' => $attribute->template,
                     'adapterClassName' => $attribute->adapterClassName,
-                ], fn(?string $value): bool => isset($value))
+                ], fn (?string $value): bool => isset($value))
             );
         }
     );
