@@ -21,14 +21,102 @@ composer require pti/pti
 
 ## Single content element
 
-To render a single content element type via PTI, use the `PTI` content object:
+To render a single content element, use the `PTI` or `PTI_OBJECT` content object.
+
+### Rendering objects with PTI_OBJECT
+
+Use `PTI_OBJECT` to call a single invokable processor and pass its result to a template.
+
+First, create a content element processor and mark it with the `AsContentElementProcessor` attribute.
+The processor receives the request, the TypoScript configuration array, and a resolved TYPO3 `Record`. It returns the view model as an object or as an array.
+The current `ContentObjectRenderer` is available through `$request->getAttribute('currentContentObject')`.
+
+For example, define a view model:
+
+```php
+<?php
+
+namespace Vendor\Site\View\Model;
+
+readonly class TextPicViewModel
+{
+    public function __construct(
+        public string $headline,
+        public string $text,
+    ) {
+    }
+}
+```
+
+Then, implement the processor:
+
+```php
+<?php
+
+namespace Vendor\Site\Processor;
+
+use PrototypeIntegration\PrototypeIntegration\DependencyInjection\Attribute\AsContentElementProcessor;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Domain\Record;
+use Vendor\Site\View\Model\TextPicViewModel;
+
+#[AsContentElementProcessor('textpic')]
+final class TextPicProcessor
+{
+    public function __invoke(
+        ServerRequestInterface $request,
+        array $configuration,
+        Record $record,
+    ): ?TextPicViewModel {
+        return new TextPicViewModel(
+            headline: (string)$record->get('header'),
+            text: (string)$record->get('bodytext'),
+        );
+    }
+}
+```
+
+Returning `null` from the processor produces an empty string without rendering a template.
+
+Then, configure the content element in TypoScript:
+
+```typo3_typoscript
+tt_content.textpic = PTI_OBJECT
+tt_content.textpic {
+    templateName = @content-elements/ce03-textpic/ce03-textpic.twig
+}
+```
+
+PTI views expect an array of template variables. If the processor returns an array, it is passed directly to the view.
+If the processor returns an object, you can normalize it into top-level template variables or pass it unchanged under a named variable.
+
+To normalize an object:
+
+```typo3_typoscript
+tt_content.textpic.normalize = 1
+```
+
+The template can then access the variables directly, for example with `{{ headline }}`.
+
+To pass an object unchanged under a named variable:
+
+```typo3_typoscript
+tt_content.textpic.normalize = 0
+tt_content.textpic.as = model
+```
+
+The template can then access the object through that variable, for example with `{{ model.headline }}`. By default, normalization is disabled and object results are available as `data`.
+
+### PTI
+
 ```typo3_typoscript
 tt_content.text = PTI
 ```
 
 This way the tt_content row will be passed to the template engine.
 
-Optionally, define a template, data processor and data processor configuration:
+Optionally, define a template and data processors with configuration:
+
 ```typo3_typoscript
 tt_content.textpic = PTI
 tt_content.textpic {
