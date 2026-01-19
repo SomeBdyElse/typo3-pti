@@ -11,7 +11,8 @@
   "require": {
     "ext-json": "*",
     "php" : "^8.3",
-    "typo3/cms-core": "^13.4.0"
+    "typo3/cms-core": "^13.4.0",
+    "symfony/serializer": "^8.0"
   },
   "require-dev": {
     "typo3/testing-framework": "^8.0.1"

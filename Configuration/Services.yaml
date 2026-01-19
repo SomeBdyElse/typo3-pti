@@ -13,6 +13,11 @@ services:
       - name: frontend.contentobject
         identifier: 'PTI'
 
+  PrototypeIntegration\PrototypeIntegration\ContentObject\PtiObjectContentObject:
+    tags:
+      - name: frontend.contentobject
+        identifier: 'PTI_OBJECT'
+
   # Do not auto wire constructors of event classes
   PrototypeIntegration\PrototypeIntegration\DataProcessing\Event\ProcessorRunnerRanEvent:
     autowire: false
