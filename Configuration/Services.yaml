@@ -8,11 +8,12 @@ services:
   PrototypeIntegration\PrototypeIntegration\:
     resource: '../Classes/*'
 
-  # Do not auto wire constructors of event classes
   PrototypeIntegration\PrototypeIntegration\ContentObject\PtiContentObject:
     tags:
       - name: frontend.contentobject
         identifier: 'PTI'
+
+  # Do not auto wire constructors of event classes
   PrototypeIntegration\PrototypeIntegration\DataProcessing\Event\ProcessorRunnerRanEvent:
     autowire: false
   PrototypeIntegration\PrototypeIntegration\DependencyInjection\Attribute\AsExtbaseProcessor:
