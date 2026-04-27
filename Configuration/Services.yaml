@@ -24,6 +24,8 @@ services:
     autowire: false
   PrototypeIntegration\PrototypeIntegration\Processor\Event\PictureProcessorRenderedEvent:
     autowire: false
+  PrototypeIntegration\PrototypeIntegration\Processor\Event\FileMetadataProcessorEvent:
+    autowire: false
   PrototypeIntegration\PrototypeIntegration\View\Event\ExtbaseViewAdapterVariablesConvertedEvent:
     autowire: false
 
