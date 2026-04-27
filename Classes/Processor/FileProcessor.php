@@ -105,13 +105,13 @@ class FileProcessor
     }
 
     /**
-     * @param array $collection The referencing with multiple uid of file collections
+     * @param array $collectionUids The referencing uids of file collections
      */
-    public function renderFilesFromCollection(array $collection, array $configuration = []): array
+    public function renderFilesFromCollection(array $collectionUids, array $configuration = []): array
     {
         $this->initialize($configuration);
         $fileCollector = GeneralUtility::makeInstance(FileCollector::class);
-        $fileCollector->addFilesFromFileCollections($collection);
+        $fileCollector->addFilesFromFileCollections($collectionUids);
         $files = $fileCollector->getFiles();
 
         return $this->processFileCollection($files);
