@@ -4,16 +4,22 @@ declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
+use PrototypeIntegration\PrototypeIntegration\Processor\Event\FileMetadataProcessorEvent;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Resource\FileInterface;
 
 class FileMetadataProcessor
 {
+    public function __construct(
+        protected EventDispatcher $eventDispatcher,
+    ) {
+    }
+
     public function processFile(FileInterface $file): array
     {
         $properties = [
             'title' => 'title',
             'description' => 'description',
-            'caption' => 'caption',
             'copyright' => 'copyright',
             'link' => 'link',
             'alternative' => 'alternative',
@@ -32,9 +38,8 @@ class FileMetadataProcessor
             }
         }
 
-        if (isset($metaData['caption']) && !isset($metaData['description'])) {
-            $metaData['description'] = $metaData['caption'];
-        }
+        $event = new FileMetadataProcessorEvent($file, $metaData);
+        $metaData = $this->eventDispatcher->dispatch($event)->getMetaData();
 
         return $metaData;
     }
