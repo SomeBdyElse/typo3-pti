@@ -2,10 +2,10 @@
 
 namespace PrototypeIntegration\PrototypeIntegration\ContentObject;
 
+use PrototypeIntegration\PrototypeIntegration\Processor\ContentElementProcessorFactory;
 use PrototypeIntegration\PrototypeIntegration\View\ViewResolverInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use TYPO3\CMS\Core\Domain\RecordFactory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 
 class PtiObjectContentObject extends AbstractContentObject
@@ -13,6 +13,7 @@ class PtiObjectContentObject extends AbstractContentObject
     public function __construct(
         protected ViewResolverInterface $viewResolver,
         protected NormalizerInterface $normalizer,
+        protected ContentElementProcessorFactory $processorFactory,
         protected RecordFactory $recordFactory,
     ) {
     }
@@ -24,8 +25,8 @@ class PtiObjectContentObject extends AbstractContentObject
         );
 
         $processor = isset($conf['processor'])
-            ? GeneralUtility::makeInstance($conf['processor'])
-            : null;
+            ? $this->processorFactory->getProcessor($conf['processor'])
+            : $this->processorFactory->getProcessorForRecord($record);
         if (!isset($processor)) {
             return '';
         }

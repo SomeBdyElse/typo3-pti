@@ -36,6 +36,8 @@ services:
     autowire: false
   PrototypeIntegration\PrototypeIntegration\DependencyInjection\Attribute\AsExtbaseProcessor:
     autowire: false
+  PrototypeIntegration\PrototypeIntegration\DependencyInjection\Attribute\AsContentElementProcessor:
+    autowire: false
   PrototypeIntegration\PrototypeIntegration\Processor\Event\MediaProcessorManipulateImageRenderConfigurationEvent:
     autowire: false
   PrototypeIntegration\PrototypeIntegration\Processor\Event\MediaProcessorRenderedEvent:
