@@ -2,7 +2,9 @@
 
 namespace TYPO3\CMS\Core;
 
+use PrototypeIntegration\PrototypeIntegration\DependencyInjection\AsContentElementControllerCompilerPass;
 use PrototypeIntegration\PrototypeIntegration\DependencyInjection\AsExtbaseProcessorCompilerPass;
+use PrototypeIntegration\PrototypeIntegration\DependencyInjection\Attribute\AsContentElementController;
 use PrototypeIntegration\PrototypeIntegration\DependencyInjection\Attribute\AsExtbaseProcessor;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -24,5 +26,19 @@ return function (ContainerConfigurator $container, ContainerBuilder $containerBu
         }
     );
 
+    $containerBuilder->registerAttributeForAutoconfiguration(
+        AsContentElementController::class,
+        static function (ChildDefinition $definition, AsContentElementController $attribute, \Reflector $reflector): void {
+            $definition->addTag(
+                'pti.content_element_controllers',
+                [
+                    'table' => 'tt_content',
+                    'type' => $attribute->CType,
+                ]
+            );
+        }
+    );
+
     $containerBuilder->addCompilerPass(new AsExtbaseProcessorCompilerPass());
+    $containerBuilder->addCompilerPass(new AsContentElementControllerCompilerPass());
 };

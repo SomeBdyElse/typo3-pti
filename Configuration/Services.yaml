@@ -23,6 +23,8 @@ services:
     autowire: false
   PrototypeIntegration\PrototypeIntegration\DependencyInjection\Attribute\AsExtbaseProcessor:
     autowire: false
+  PrototypeIntegration\PrototypeIntegration\DependencyInjection\Attribute\AsContentElementController:
+    autowire: false
   PrototypeIntegration\PrototypeIntegration\Processor\Event\MediaProcessorManipulateImageRenderConfigurationEvent:
     autowire: false
   PrototypeIntegration\PrototypeIntegration\Processor\Event\MediaProcessorRenderedEvent:

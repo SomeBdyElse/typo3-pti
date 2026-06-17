@@ -2,10 +2,10 @@
 
 namespace PrototypeIntegration\PrototypeIntegration\ContentObject;
 
+use PrototypeIntegration\PrototypeIntegration\Processor\ControllerFactory;
 use PrototypeIntegration\PrototypeIntegration\Serialization\SerializerFactory;
 use PrototypeIntegration\PrototypeIntegration\View\ViewResolverInterface;
 use TYPO3\CMS\Core\Domain\RecordFactory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 
 class PtiObjectContentObject extends AbstractContentObject
@@ -13,6 +13,7 @@ class PtiObjectContentObject extends AbstractContentObject
     public function __construct(
         protected ViewResolverInterface $viewResolver,
         protected SerializerFactory $serializerFactory,
+        protected ControllerFactory $controllerFactory,
         protected RecordFactory $recordFactory,
     ) {
 
@@ -23,7 +24,13 @@ class PtiObjectContentObject extends AbstractContentObject
             $this->cObj->getCurrentTable(),
             $this->cObj->data,
         );
-        $controller = GeneralUtility::makeInstance($conf['controller']);
+        $controller = isset($conf['controller'])
+            ? $this->controllerFactory->getController($conf['controller'])
+            : $this->controllerFactory->getControllerForRecord($record);
+        if (!isset($controller)) {
+            return '';
+        }
+
         $object = $controller->__invoke(
             $this->request,
             $this->cObj,
