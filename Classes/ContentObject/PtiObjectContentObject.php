@@ -4,6 +4,7 @@ namespace PrototypeIntegration\PrototypeIntegration\ContentObject;
 
 use PrototypeIntegration\PrototypeIntegration\View\ViewResolverInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use TYPO3\CMS\Core\Domain\RecordFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 
@@ -12,10 +13,16 @@ class PtiObjectContentObject extends AbstractContentObject
     public function __construct(
         protected ViewResolverInterface $viewResolver,
         protected NormalizerInterface $normalizer,
+        protected RecordFactory $recordFactory,
     ) {
     }
     public function render($conf = [])
     {
+        $record = $this->recordFactory->createResolvedRecordFromDatabaseRow(
+            $this->cObj->getCurrentTable(),
+            $this->cObj->data,
+        );
+
         $processor = isset($conf['processor'])
             ? GeneralUtility::makeInstance($conf['processor'])
             : null;
@@ -26,7 +33,7 @@ class PtiObjectContentObject extends AbstractContentObject
         $result = $processor->__invoke(
             $this->request,
             $conf,
-            $this->cObj->data,
+            $record,
         );
         if ($result === null) {
             return '';
