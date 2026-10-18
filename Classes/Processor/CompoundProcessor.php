@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
-use PrototypeIntegration\PrototypeIntegration\DataProcessing\ProcessorRunner;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -16,6 +14,7 @@ class CompoundProcessor implements PtiDataProcessor
 
     public function __construct(
         protected TypoScriptService $typoScriptService,
+        protected GeneralContentElementProcessor $contentElementProcessor,
     ) {
     }
 
@@ -70,21 +69,14 @@ class CompoundProcessor implements PtiDataProcessor
                     case 'PTI_CONTENT':
                         $contentData[$nodeKey] = $this->renderContentSection($processorConfiguration, $node);
                         break;
-                    case 'PTI':
-                        $contentData[$nodeKey] = $this->processPtiContentObjectData($node, $data, $table);
-                        break;
                     default:
-                        $contentObjectConfiguration = $this->typoScriptService->convertPlainArrayToTypoScriptArray(
-                            $node
-                        );
-                        $contentObjectResult = $this->renderContentObject(
-                            $processorConfiguration,
-                            $nodeValue,
-                            $contentObjectConfiguration,
+                        $contentObjectResult = $this->contentElementProcessor->processRow(
+                            $this->contentObjectRenderer->getRequest()->withAttribute('currentContentObject', $this->contentObjectRenderer),
+                            array_replace($node, $processorConfiguration),
+                            $data,
                             $table,
-                            $data
                         );
-                        if (isset($contentObjectResult)) {
+                        if ($contentObjectResult !== null) {
                             $contentData[$nodeKey] = $contentObjectResult;
                         }
                 }
@@ -104,94 +96,21 @@ class CompoundProcessor implements PtiDataProcessor
         $contentData = [];
         $records = $this->contentObjectRenderer->getRecords($table, $configuration['select.']);
         foreach ($records as $record) {
-            $cType = $record['CType'];
-            $typoScript = $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')->getSetupArray();
-            $value = $typoScript[$table . '.'][$cType];
-            $property = $typoScript[$table . '.'][$cType . '.'];
-
-            switch ($value) {
-                case 'PTI':
-                    $contentObjectResult = $this->processPtiContentObjectData($property, $record, $table);
-                    if (isset($contentObjectResult)) {
-                        $contentData[] = $contentObjectResult;
-                    }
-                    break;
-                default:
-                    $contentResponse = $this->renderContentObject(
-                        $processorConfiguration,
-                        $value,
-                        $property,
-                        $table,
-                        $record
-                    );
-                    $contentData[] = $contentResponse;
+            $result = $this->contentElementProcessor->processRow(
+                $this->contentObjectRenderer->getRequest()->withAttribute('currentContentObject', $this->contentObjectRenderer),
+                $processorConfiguration,
+                $record,
+                $table,
+            );
+            if (isset($result)) {
+                $contentData[] = $result;
             }
         }
         return $contentData;
     }
 
-    protected function processPtiContentObjectData($conf, $record, $table)
-    {
-        /** @var ContentObjectRenderer $contentObjectRenderer */
-        $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-        $contentObjectRenderer->start($record, $table);
-        $this->lastChanged($contentObjectRenderer, $table, $record);
-
-        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
-        $plainConf = $typoScriptService->convertTypoScriptArrayToPlainArray($conf);
-
-        /** @var ProcessorRunner $processorRunner */
-        $processorRunner = GeneralUtility::makeInstance(ProcessorRunner::class);
-        $processedData = $processorRunner->processData($contentObjectRenderer, $plainConf, $table);
-        if (!isset($processedData['_templateName']) && isset($conf['templateName'])) {
-            $processedData['_templateName'] = $conf['templateName'];
-        }
-        return $processedData;
-    }
-
     protected function getTypoScriptFrontendController(): TypoScriptFrontendController
     {
         return $GLOBALS['TSFE'];
-    }
-
-    /**
-     * @param $nodeValue
-     * @param array $contentObjectConfiguration
-     * @param string $table
-     * @param array $data
-     * @return mixed
-     */
-    protected function renderContentObject(array $processorConfiguration, $nodeValue, array $contentObjectConfiguration, string $table, array $data)
-    {
-        $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-
-        // Force content object renderer to render json, so we can parse the result
-        $data['_pti_format'] = 'json';
-
-        // For uncached rendering, the output of the single content object needs to match the global output format
-        if (isset($processorConfiguration['_overrideUncachedFormat'])) {
-            $data['_pti_format_uncached'] = $processorConfiguration['_overrideUncachedFormat'];
-        }
-        $contentObjectRenderer->start($data, $table);
-        $contentObjectResult = $contentObjectRenderer->cObjGetSingle(
-            $nodeValue,
-            $contentObjectConfiguration
-        );
-        $this->lastChanged($contentObjectRenderer, $table, $data);
-
-        $data = json_decode($contentObjectResult, true);
-        if ($data !== null) {
-            return $data;
-        }
-
-        return $contentObjectResult;
-    }
-
-    protected function lastChanged(ContentObjectRenderer $contentObjectRenderer, string $table, array $data)
-    {
-        $timestampeColumn = $GLOBALS['TCA'][$table]['ctrl']['tstamp'] ?? 'tstamp';
-        if (isset($data[$timestampeColumn])) {
-            $contentObjectRenderer->lastChanged($data[$timestampeColumn]);
-        }
     }
 }
