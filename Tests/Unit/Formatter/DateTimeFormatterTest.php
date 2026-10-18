@@ -10,7 +10,7 @@ class DateTimeFormatterTest extends UnitTestCase
     public static function provideTestDataWithType(): array
     {
         return [
-            [\IntlDateFormatter::MEDIUM, \IntlDateFormatter::MEDIUM, 'en-US', 'Oct 20, 2022, 10:00:00 AM'],
+            [\IntlDateFormatter::MEDIUM, \IntlDateFormatter::MEDIUM, 'en-US', "Oct 20, 2022, 10:00:00\u{202F}AM"],
             [\IntlDateFormatter::MEDIUM, \IntlDateFormatter::MEDIUM, 'de-DE', '20.10.2022, 10:00:00'],
             [\IntlDateFormatter::LONG, \IntlDateFormatter::NONE, 'de-DE', '20. Oktober 2022'],
         ];

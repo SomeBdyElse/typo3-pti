@@ -5,6 +5,11 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      LANG: C
+      LC_ALL: ''
+      LC_CTYPE: C.UTF-8
+      LC_TIME: C
 
     steps:
     - uses: actions/checkout@v2
@@ -14,12 +19,23 @@ jobs:
       with:
         args: --diff --dry-run
 
+    - name: Configure Docker locales
+      run: |
+        sudo apt-get update
+        sudo apt-get install --yes locales
+        sudo localedef -i de_DE -f UTF-8 de_DE.utf8
+        sudo localedef -i en_GB -f UTF-8 en_GB.utf8
+        sudo localedef -i fr_FR -f UTF-8 fr_FR.utf8
+        locale
+        locale -a
+
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: 8.3
         tools: composer
-        extensions: pdo, sqlite3
+        extensions: intl, pdo, sqlite3
+        ini-values: intl.default_locale=en_US_POSIX
 
     - name: composer install
       run: composer install -n
