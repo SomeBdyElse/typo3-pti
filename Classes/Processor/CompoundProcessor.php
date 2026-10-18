@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
-use PrototypeIntegration\PrototypeIntegration\DataProcessing\ProcessorRunner;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class CompoundProcessor implements PtiDataProcessor
@@ -15,6 +13,7 @@ class CompoundProcessor implements PtiDataProcessor
 
     public function __construct(
         protected TypoScriptService $typoScriptService,
+        protected ContentElementProcessor $recordProcessor,
     ) {
     }
 
@@ -69,21 +68,14 @@ class CompoundProcessor implements PtiDataProcessor
                     case 'PTI_CONTENT':
                         $contentData[$nodeKey] = $this->renderContentSection($processorConfiguration, $node);
                         break;
-                    case 'PTI':
-                        $contentData[$nodeKey] = $this->processPtiContentObjectData($node, $data, $table);
-                        break;
                     default:
-                        $contentObjectConfiguration = $this->typoScriptService->convertPlainArrayToTypoScriptArray(
-                            $node
-                        );
-                        $contentObjectResult = $this->renderContentObject(
-                            $processorConfiguration,
-                            $nodeValue,
-                            $contentObjectConfiguration,
+                        $contentObjectResult = $this->recordProcessor->processRow(
+                            $this->contentObjectRenderer->getRequest()->withAttribute('currentContentObject', $this->contentObjectRenderer),
+                            array_replace($node, $processorConfiguration),
+                            $data,
                             $table,
-                            $data
                         );
-                        if (isset($contentObjectResult)) {
+                        if ($contentObjectResult !== null) {
                             $contentData[$nodeKey] = $contentObjectResult;
                         }
                 }
@@ -103,27 +95,14 @@ class CompoundProcessor implements PtiDataProcessor
         $contentData = [];
         $records = $this->contentObjectRenderer->getRecords($table, $configuration['select.']);
         foreach ($records as $record) {
-            $cType = $record['CType'];
-            $typoScript = $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')->getSetupArray();
-            $value = $typoScript[$table . '.'][$cType];
-            $property = $typoScript[$table . '.'][$cType . '.'];
-
-            switch ($value) {
-                case 'PTI':
-                    $contentObjectResult = $this->processPtiContentObjectData($property, $record, $table);
-                    if (isset($contentObjectResult)) {
-                        $contentData[] = $contentObjectResult;
-                    }
-                    break;
-                default:
-                    $contentResponse = $this->renderContentObject(
-                        $processorConfiguration,
-                        $value,
-                        $property,
-                        $table,
-                        $record
-                    );
-                    $contentData[] = $contentResponse;
+            $result = $this->recordProcessor->processRow(
+                $this->contentObjectRenderer->getRequest()->withAttribute('currentContentObject', $this->contentObjectRenderer),
+                $processorConfiguration,
+                $record,
+                $table,
+            );
+            if (isset($result)) {
+                $contentData[] = $result;
             }
         }
         return $contentData;
