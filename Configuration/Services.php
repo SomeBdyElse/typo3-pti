@@ -3,7 +3,9 @@
 namespace TYPO3\CMS\Core;
 
 use PrototypeIntegration\PrototypeIntegration\DependencyInjection\AsExtbaseProcessorCompilerPass;
+use PrototypeIntegration\PrototypeIntegration\DependencyInjection\AsRecordProcessorCompilerPass;
 use PrototypeIntegration\PrototypeIntegration\DependencyInjection\Attribute\AsExtbaseProcessor;
+use PrototypeIntegration\PrototypeIntegration\DependencyInjection\Attribute\AsRecordProcessor;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -24,5 +26,19 @@ return function (ContainerConfigurator $container, ContainerBuilder $containerBu
         }
     );
 
+    $containerBuilder->registerAttributeForAutoconfiguration(
+        AsRecordProcessor::class,
+        static function (ChildDefinition $definition, AsRecordProcessor $attribute, \Reflector $reflector): void {
+            $definition->addTag(
+                'pti.record_processors',
+                [
+                    'mainType' => $attribute->mainType,
+                    'recordType' => $attribute->recordType,
+                ]
+            );
+        }
+    );
+
     $containerBuilder->addCompilerPass(new AsExtbaseProcessorCompilerPass());
+    $containerBuilder->addCompilerPass(new AsRecordProcessorCompilerPass());
 };

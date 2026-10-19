@@ -6,6 +6,7 @@ namespace PrototypeIntegration\PrototypeIntegration\ContentObject;
 
 use PrototypeIntegration\PrototypeIntegration\DataProcessing\ProcessorRunner;
 use PrototypeIntegration\PrototypeIntegration\View\ViewResolverInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 
@@ -19,6 +20,7 @@ class PtiContentObject extends AbstractContentObject
         protected TypoScriptService $typoScriptService,
         protected ProcessorRunner $processorRunner,
         protected ViewResolverInterface $viewResolver,
+        protected NormalizerInterface $normalizer,
     ) {
     }
 
@@ -38,10 +40,13 @@ class PtiContentObject extends AbstractContentObject
         if (!isset($data)) {
             return '';
         }
+        if (is_string($data)) {
+            return $data;
+        }
 
         $templateName = $this->getTemplateName();
-        $view = $this->viewResolver->getViewForContentObject($data, $templateName);
-        $view->setVariables($data);
+        $view = $this->viewResolver->getViewForContentObject(is_array($data) ? $data : $this->cObj->data, $templateName);
+        $view->setVariables($this->normalizeVariables($data));
 
         $this->lastChanged();
 
@@ -51,6 +56,23 @@ class PtiContentObject extends AbstractContentObject
     protected function getTemplateName()
     {
         return $this->templateName;
+    }
+
+    protected function normalizeVariables(object|array $data): array
+    {
+        if (is_array($data)) {
+            return $data;
+        }
+
+        if ((bool)($this->conf['normalize'] ?? null)) {
+            $variables = $this->normalizer->normalize($data);
+            if (!is_array($variables)) {
+                throw new \UnexpectedValueException('PTI normalization must produce an array of template variables.');
+            }
+            return $variables;
+        }
+
+        return [$this->conf['as'] ?? 'data' => $data];
     }
 
     protected function lastChanged(): void

@@ -6,6 +6,9 @@ namespace PrototypeIntegration\PrototypeIntegration\DataProcessing;
 
 use PrototypeIntegration\PrototypeIntegration\DataProcessing\Event\ProcessorRunnerRanEvent;
 use PrototypeIntegration\PrototypeIntegration\Processor\PtiDataProcessor;
+use PrototypeIntegration\PrototypeIntegration\Processor\RecordProcessorFactory;
+use TYPO3\CMS\Core\Domain\Record;
+use TYPO3\CMS\Core\Domain\RecordFactory;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -14,12 +17,59 @@ class ProcessorRunner
 {
     protected EventDispatcher $eventDispatcher;
 
-    public function __construct(EventDispatcher $eventDispatcher)
-    {
+    public function __construct(
+        EventDispatcher $eventDispatcher,
+        protected RecordProcessorFactory $processorFactory,
+        protected RecordFactory $recordFactory,
+    ) {
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function processData(ContentObjectRenderer $contentObjectRenderer, array $conf, ?string $table): ?array
+    public function processData(ContentObjectRenderer $contentObjectRenderer, array $conf, ?string $table): object|array|string|null
+    {
+        if (isset($conf['dataProcessors'])) {
+            return $this->runDataProcessors($contentObjectRenderer, $conf, $table);
+        }
+
+        if (isset($conf['processor'])) {
+            $processor = $this->processorFactory->getProcessor($conf['processor']);
+        } else {
+            $processor = $this->processorFactory->getProcessorForRecord($table, $contentObjectRenderer->data);
+        }
+        if (!isset($processor)) {
+            return $contentObjectRenderer->data;
+        }
+
+        $request = $contentObjectRenderer->getRequest()->withAttribute('currentContentObject', $contentObjectRenderer);
+        $record = $this->recordFactory->createResolvedRecordFromDatabaseRow($table, $contentObjectRenderer->data);
+
+        return $processor->__invoke($request, $conf, $record);
+    }
+
+    public function processRecord(ContentObjectRenderer $contentObjectRenderer, array $conf, Record $record): object|array|string|null
+    {
+        if (isset($conf['dataProcessors'])) {
+            // we have a record, but data processors only work with arrays. unwrap
+            $table = $record->getMainType();
+            $contentObjectRenderer->start($contentObjectRenderer->data, $table);
+            return $this->runDataProcessors($contentObjectRenderer, $conf, $table);
+        }
+
+        if (isset($conf['processor'])) {
+            $processor = $this->processorFactory->getProcessor($conf['processor']);
+        } else {
+            $processor = $this->processorFactory->getProcessorForRecord($record);
+        }
+        if (!isset($processor)) {
+            return $record;
+        }
+
+        $request = $contentObjectRenderer->getRequest()->withAttribute('currentContentObject', $contentObjectRenderer);
+
+        return $processor->__invoke($request, $conf, $record);
+    }
+
+    protected function runDataProcessors(ContentObjectRenderer $contentObjectRenderer, array $conf, ?string $table): ?array
     {
         $data = $contentObjectRenderer->data;
         foreach ($conf['dataProcessors'] ?? [] as $dataProcessorConfiguration) {
