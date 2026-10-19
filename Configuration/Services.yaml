@@ -9,14 +9,29 @@ services:
     resource: '../Classes/*'
 
   PrototypeIntegration\PrototypeIntegration\ContentObject\PtiContentObject:
+    arguments:
+      $normalizer: '@pti.normalizer'
     tags:
       - name: frontend.contentobject
         identifier: 'PTI'
+
+  pti.normalizer:
+    class: Symfony\Component\Serializer\Serializer
+    arguments:
+      $normalizers:
+        - !service
+          class: Symfony\Component\Serializer\Normalizer\DateTimeNormalizer
+          autowire: false
+        - !service
+          class: Symfony\Component\Serializer\Normalizer\ObjectNormalizer
+          autowire: false
 
   # Do not auto wire constructors of event classes
   PrototypeIntegration\PrototypeIntegration\DataProcessing\Event\ProcessorRunnerRanEvent:
     autowire: false
   PrototypeIntegration\PrototypeIntegration\DependencyInjection\Attribute\AsExtbaseProcessor:
+    autowire: false
+  PrototypeIntegration\PrototypeIntegration\DependencyInjection\Attribute\AsRecordProcessor:
     autowire: false
   PrototypeIntegration\PrototypeIntegration\Processor\Event\MediaProcessorManipulateImageRenderConfigurationEvent:
     autowire: false
