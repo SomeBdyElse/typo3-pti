@@ -41,7 +41,7 @@ class ProcessorRunner
                 $dataProcessorClassName,
                 $dataProcessorConfiguration,
                 $contentObjectRenderer,
-                $table
+                $data
             );
             if (is_null($data)) {
                 return null;
@@ -63,7 +63,8 @@ class ProcessorRunner
     protected function runDataProcessor(
         string $className,
         array $configuration,
-        ContentObjectRenderer $contentObjectRenderer
+        ContentObjectRenderer $contentObjectRenderer,
+        array $data
     ): ?array {
         // Instantiate class
         $dataProcessor = GeneralUtility::makeInstance($className);
@@ -79,7 +80,7 @@ class ProcessorRunner
             $dataProcessor->injectContentObjectRenderer($contentObjectRenderer);
         }
 
-        $data = $dataProcessor->process($contentObjectRenderer->data, $configuration);
+        $data = $dataProcessor->process($data, $configuration);
         return $data;
     }
 }

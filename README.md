@@ -59,6 +59,8 @@ tt_content.textpic {
 }
 ```
 
+The first data processor receives the database row as an array. Each subsequent processor receives the previous processor's result. The final array supplies the template variables; returning `null` stops processing and skips rendering.
+
 A sample data processor for a simple content element:
 ```php
 <?php
