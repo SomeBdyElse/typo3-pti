@@ -53,10 +53,14 @@ class ContentElementProcessor
         $request = $request->withAttribute('currentContentObject', $contentObjectRenderer);
 
         if (isset($configuration['_typoScriptNodeValue'])) {
+            // TypoScript configuration was passed to this processor directly, like `object = TEXT`
+            // or `object = PTI`. There is no need to lookup $table.$type.
             $typoScriptValue = $configuration['_typoScriptNodeValue'];
             unset($configuration['_typoScriptNodeValue']);
             $typoScriptConfiguration = GeneralUtility::makeInstance(TypoScriptService::class)->convertPlainArrayToTypoScriptArray($configuration);
         } else {
+            // We did not get any direct typoscript configuration.
+            // Look up $table.$type in the typoscript array.
             $type = $recordOrRow instanceof Record ? $recordOrRow->getRecordType() : $recordOrRow['CType'] ?? null;
             if (!isset($type)) {
                 throw new \RuntimeException('Unable to determine record type');
@@ -67,18 +71,21 @@ class ContentElementProcessor
             $typoScriptValue = $typoScript[$table . '.'][$type] ?? null;
             $typoScriptConfiguration = $typoScript[$table . '.'][$type . '.'] ?? [];
         }
-        if (isset($typoScriptValue)) {
-            return $this->renderWithTypoScript(
-                $request,
-                $typoScriptConfiguration,
-                $recordOrRow,
-                $table,
-                $typoScriptValue,
-                $configuration,
-            );
+
+        if (!isset($typoScriptValue)) {
+            // There was no TypoScript configuration at all. Check if there is a processor
+            // for the given row/record and render accordingly.
+            return $this->renderWithPtiProcessor($request, $configuration, $recordOrRow, $table);
         }
 
-        return $this->renderWithPtiProcessor($request, $configuration, $recordOrRow, $table);
+        return $this->renderWithTypoScript(
+            $request,
+            $typoScriptConfiguration,
+            $recordOrRow,
+            $table,
+            $typoScriptValue,
+            $configuration,
+        );
     }
 
     protected function createNewContentObjectRenderer(
