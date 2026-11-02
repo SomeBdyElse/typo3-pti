@@ -6,23 +6,18 @@ namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use UnexpectedValueException;
 
 class ImageProcessor
 {
     protected ContentObjectRenderer $contentObject;
 
-    protected TypoScriptFrontendController $tsfe;
-
     /**
      * @param ContentObjectRenderer $contentObject
-     * @SuppressWarnings(PHPMD.Superglobals)
      */
     public function __construct(ContentObjectRenderer $contentObject)
     {
         $this->contentObject = $contentObject;
-        $this->tsfe = $GLOBALS['TSFE'];
     }
 
     /**

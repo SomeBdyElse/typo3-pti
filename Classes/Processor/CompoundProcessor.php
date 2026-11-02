@@ -8,7 +8,6 @@ use PrototypeIntegration\PrototypeIntegration\DataProcessing\ProcessorRunner;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 class CompoundProcessor implements PtiDataProcessor
 {
@@ -147,11 +146,6 @@ class CompoundProcessor implements PtiDataProcessor
             $processedData['_templateName'] = $conf['templateName'];
         }
         return $processedData;
-    }
-
-    protected function getTypoScriptFrontendController(): TypoScriptFrontendController
-    {
-        return $GLOBALS['TSFE'];
     }
 
     /**
