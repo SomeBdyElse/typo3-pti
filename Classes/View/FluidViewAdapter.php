@@ -14,7 +14,7 @@ readonly class FluidViewAdapter extends \TYPO3\CMS\Fluid\View\FluidViewAdapter
     }
 
     #[\Override]
-    public function render($templateFileName = null): string
+    public function render(string $templateFileName = ''): string
     {
         $renderingContext = $this->getRenderingContext();
         $variableProvider = $renderingContext->getVariableProvider();
