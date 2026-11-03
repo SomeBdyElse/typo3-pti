@@ -41,9 +41,7 @@ class TypoLinkStringProcessorTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function simpleExternalUrl()
     {
         $resultingArray = $this->typoLinkStringProcessor->processTypoLinkString('https://www.example.com/asdf');
@@ -54,9 +52,7 @@ class TypoLinkStringProcessorTest extends UnitTestCase
         self::assertEmpty($resultingArray['config']['title']);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function linkWithBlankTarget()
     {
         $resultingArray = $this->typoLinkStringProcessor->processTypoLinkString('https://www.example.com/asdf _blank');
