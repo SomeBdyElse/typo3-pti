@@ -7,10 +7,10 @@ namespace PrototypeIntegration\PrototypeIntegration\Processor;
 use PrototypeIntegration\PrototypeIntegration\Processor\Event\MediaProcessorManipulateImageRenderConfigurationEvent;
 use PrototypeIntegration\PrototypeIntegration\Processor\Event\MediaProcessorRenderedEvent;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
-use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
+use TYPO3\CMS\Core\Resource\FileType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Resource\FileCollector;
 
@@ -73,7 +73,7 @@ class MediaProcessor
     ): ?array {
         /** @var FileInterface $mediaElement */
         $fileType = $this->getFileType($mediaElement);
-        if ($fileType == AbstractFile::FILETYPE_IMAGE) {
+        if ($fileType == FileType::IMAGE->value) {
             $mediaItem = $this->renderImageElement(
                 $mediaElement,
                 $imageConfiguration,
@@ -82,7 +82,7 @@ class MediaProcessor
             return $mediaItem;
         }
 
-        if ($fileType == AbstractFile::FILETYPE_VIDEO) {
+        if ($fileType == FileType::VIDEO->value) {
             $mediaItem = $this->renderVideoElement($mediaElement, $imageThumbnailConfiguration);
             return $mediaItem;
         }
@@ -175,6 +175,6 @@ class MediaProcessor
             return $fileOrFileReference->getOriginalFile()->getType();
         }
 
-        return AbstractFile::FILETYPE_UNKNOWN;
+        return FileType::UNKNOWN->value;
     }
 }
