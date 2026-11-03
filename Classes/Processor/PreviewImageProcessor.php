@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
-use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\FileRepository;
+use TYPO3\CMS\Core\Resource\FileType;
 use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -61,7 +61,7 @@ class PreviewImageProcessor
 
         // If no explicit poster image is set, try to use the file itself
         $isRenderableFile =
-            $file->getType() == AbstractFile::FILETYPE_IMAGE
+            $file->getType() == FileType::IMAGE->value
             || GeneralUtility::inList($GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'], $file->getExtension())
         ;
         if ($isRenderableFile) {
