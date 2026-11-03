@@ -1,3 +1,6 @@
+/.idea
+/.vscode
+
 /composer.lock
 /.Build
 /.phpunit.result.cache
