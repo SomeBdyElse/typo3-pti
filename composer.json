@@ -11,10 +11,10 @@
   "require": {
     "ext-json": "*",
     "php" : "^8.3",
-    "typo3/cms-core": "^13.4.0",
-    "typo3/cms-extbase": "^13.4.0",
-    "typo3/cms-fluid": "^13.4.0",
-    "typo3/cms-frontend": "^13.4.0"
+    "typo3/cms-core": "^13.4 || ^14.0",
+    "typo3/cms-extbase": "^13.4 || ^14.0",
+    "typo3/cms-fluid": "^13.4 || ^14.0",
+    "typo3/cms-frontend": "^13.4 || ^14.0"
   },
   "require-dev": {
     "typo3/testing-framework": "^9.7"
