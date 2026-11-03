@@ -16,7 +16,7 @@ class DateTimeFormatterTest extends UnitTestCase
         ];
     }
 
-    /** @dataProvider provideTestDataWithType */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideTestDataWithType')]
     public function testFormat(int $dateType, int $timeType, ?string $locale, string $expected): void
     {
         $dateTimeFormatter = new DateTimeFormatter();
@@ -40,7 +40,7 @@ class DateTimeFormatterTest extends UnitTestCase
         ];
     }
 
-    /** @dataProvider provideTestDataWithPattern */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideTestDataWithPattern')]
     public function testFormatWithPattern(string $pattern, ?string $locale, string $expected): void
     {
         $dateTimeFormatter = new DateTimeFormatter();

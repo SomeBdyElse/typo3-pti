@@ -22,9 +22,9 @@ class FileSizeProcessorTest extends UnitTestCase
      * @param mixed $fileSize
      * @param array $formatSettings
      * @param string $expected
-     * @test
-     * @dataProvider defaultFormatDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('defaultFormatDataProvider')]
     public function defaultFormatFileSize($fileSize, $formatSettings, $expected)
     {
         self::assertEquals($expected, $this->fileSizeProcessor->formatFileSize($fileSize, $formatSettings));
