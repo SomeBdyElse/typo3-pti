@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PrototypeIntegration\PrototypeIntegration\Processor;
 
 use PrototypeIntegration\PrototypeIntegration\DataProcessing\ProcessorRunner;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -104,7 +105,7 @@ class CompoundProcessor implements PtiDataProcessor
         $records = $this->contentObjectRenderer->getRecords($table, $configuration['select.']);
         foreach ($records as $record) {
             $cType = $record['CType'];
-            $typoScript = $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')->getSetupArray();
+            $typoScript = $this->getRequest()->getAttribute('frontend.typoscript')->getSetupArray();
             $value = $typoScript[$table . '.'][$cType];
             $property = $typoScript[$table . '.'][$cType . '.'];
 
@@ -133,6 +134,7 @@ class CompoundProcessor implements PtiDataProcessor
     {
         /** @var ContentObjectRenderer $contentObjectRenderer */
         $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+        $contentObjectRenderer->setRequest($this->getRequest());
         $contentObjectRenderer->start($record, $table);
         $this->lastChanged($contentObjectRenderer, $table, $record);
 
@@ -158,6 +160,7 @@ class CompoundProcessor implements PtiDataProcessor
     protected function renderContentObject(array $processorConfiguration, $nodeValue, array $contentObjectConfiguration, string $table, array $data)
     {
         $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+        $contentObjectRenderer->setRequest($this->getRequest());
 
         // Force content object renderer to render json, so we can parse the result
         $data['_pti_format'] = 'json';
@@ -187,5 +190,10 @@ class CompoundProcessor implements PtiDataProcessor
         if (isset($data[$timestampeColumn])) {
             $contentObjectRenderer->lastChanged($data[$timestampeColumn]);
         }
+    }
+
+    protected function getRequest(): ServerRequestInterface
+    {
+        return $this->contentObjectRenderer->getRequest();
     }
 }
