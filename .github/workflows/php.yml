@@ -5,6 +5,9 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        typo3: ['^13.4', '^14.3']
     env:
       LANG: C
       LC_ALL: ''
@@ -37,8 +40,8 @@ jobs:
         extensions: intl, pdo, sqlite3
         ini-values: intl.default_locale=en_US_POSIX
 
-    - name: composer install
-      run: composer install -n
+    - name: Install test dependencies
+      run: composer update --with "typo3/cms-core:${{ matrix.typo3 }}" --with "phpunit/phpunit:^11.5" -n
 
     - name: phpunit
       run: .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml Tests/Unit
