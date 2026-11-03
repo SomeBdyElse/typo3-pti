@@ -23,7 +23,7 @@ class AsExtbaseProcessorCompilerPass implements CompilerPassInterface
                     $attributes['controller'],
                     $attributes['action'],
                     $processorClassname,
-                    $attributes['template'],
+                    $attributes['template'] ?? null,
                     $attributes['adapterClassName'] ?? null,
                 ]);
             }
